@@ -23,14 +23,14 @@ class I1820App(threading.Thread):
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
         self.things = []
         I1820App.notification_handlers = {}
-        threading.Thread(self)
+        threading.Thread.__init__(self)
 
     def add_thing(self, type, id):
         self.things.append({'type': type, 'id': id})
 
     def run(self):
         PingService(self.base_url, self.things).ping()
-        wapp.run(debug=True, host="0.0.0.0", port=1373)
+        wapp.run(debug=False, host="0.0.0.0", port=1373)
 
     def notification(self, thing: str):
         def _notification(fn):
