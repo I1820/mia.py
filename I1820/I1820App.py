@@ -14,10 +14,12 @@ import threading
 
 
 class I1820App(threading.Thread):
+    notification_handlers = {}
+
     def __init__(self, i1820_ip: str, i1820_port: int):
-        self.notification_handlers = {}
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
         self.things = []
+        self.notification_handlers[self] = {}
 
     def add_thing(self, type, id):
         self.things.append({'type': type, 'id': id})
@@ -28,7 +30,7 @@ class I1820App(threading.Thread):
 
     def notification(self, thing: str):
         def _notification(fn):
-            self.notification_handlers[thing] = fn
+            self.notification_handlers[self][thing] = fn
             return fn
         return _notification
 
@@ -39,3 +41,10 @@ class I1820App(threading.Thread):
             "endpoint": log.endpoint
         }
         requests.post(self.base_url + 'log', json=log)
+
+    @classmethod
+    def notification_handler(cls, data: dict):
+        results = {}
+        for i1820_app, handlers in cls.notification_handlers.items():
+            results[i1820_app.hash()] = handlers[data['type']](data)
+        return results
