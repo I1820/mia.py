@@ -8,7 +8,10 @@
 # =======================================
 from .log.log import I1820Log
 from .bootstrap.ping import PingService
-from .bootsrap.route import app
+from . import wapp
+
+import flask
+import json
 import requests
 import threading
 
@@ -20,13 +23,14 @@ class I1820App(threading.Thread):
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
         self.things = []
         I1820App.notification_handlers = {}
+        threading.Thread(self)
 
     def add_thing(self, type, id):
         self.things.append({'type': type, 'id': id})
 
     def run(self):
         PingService(self.base_url, self.things).ping()
-        app.run(debug=True, host="0.0.0.0", port=1373)
+        wapp.run(debug=True, host="0.0.0.0", port=1373)
 
     def notification(self, thing: str):
         def _notification(fn):
@@ -50,3 +54,10 @@ class I1820App(threading.Thread):
         except KeyError:
             pass
         return results
+
+
+@wapp.route('/event', methods=['POST'])
+def notification_handler():
+    data = flask.request.get_json(force=True)
+    result = I1820App.notification_handler(data)
+    return json.dumps(result)
