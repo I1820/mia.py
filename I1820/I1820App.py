@@ -19,7 +19,7 @@ class I1820App(threading.Thread):
     def __init__(self, i1820_ip: str, i1820_port: int):
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
         self.things = []
-        self.notification_handlers[self] = {}
+        I1820App.notification_handlers = {}
 
     def add_thing(self, type, id):
         self.things.append({'type': type, 'id': id})
@@ -30,7 +30,7 @@ class I1820App(threading.Thread):
 
     def notification(self, thing: str):
         def _notification(fn):
-            self.notification_handlers[self][thing] = fn
+            self.notification_handlers[thing] = fn
             return fn
         return _notification
 
@@ -45,6 +45,8 @@ class I1820App(threading.Thread):
     @classmethod
     def notification_handler(cls, data: dict):
         results = {}
-        for i1820_app, handlers in cls.notification_handlers.items():
-            results[i1820_app.hash()] = handlers[data['type']](data)
+        try:
+            results = cls.notification_handlers[data['type']](data)
+        except KeyError:
+            pass
         return results
