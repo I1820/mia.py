@@ -41,6 +41,8 @@ class I1820App(threading.Thread):
     def log(self, log: I1820Log):
         log = {
             "timestamp": log.timestamp.timestamp(),
+            "type": log.type,
+            "device": log.device,
             "data": {"states": log.states},
             "endpoint": log.endpoint
         }

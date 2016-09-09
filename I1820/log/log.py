@@ -11,7 +11,9 @@ from .. import i1820_id
 
 
 class I1820Log:
-    def __init__(self, data: dict):
+    def __init__(self, type, device, data: dict):
         self.states = data
+        self.type = type
+        self.device = device
         self.timestamp = datetime.datetime.now()
         self.endpoint = str(i1820_id)
