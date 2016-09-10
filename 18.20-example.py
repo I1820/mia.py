@@ -11,3 +11,4 @@ def lamp_notification(data: dict):
 
 if __name__ == '__main__':
     app.start()
+    app.log('temprature', '1', {'temprature': 10})
