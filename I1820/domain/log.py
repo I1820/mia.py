@@ -34,5 +34,5 @@ class I1820LogJSONEncoder(json.JSONEncoder):
             }
         else:
             raise TypeError(
-                "ApplicationJsonEncoder got {} instead of I1820Log.".format(
+                "I1820LogJSONEncoder got {} instead of I1820Log.".format(
                     type(obj)))
