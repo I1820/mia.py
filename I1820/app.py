@@ -6,7 +6,7 @@
 #
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-from .log.log import I1820Log, I1820LogJSONEncoder
+from .domain.log import I1820Log, I1820LogJSONEncoder
 from .bootstrap.ping import PingService
 from . import wapp
 from . import i1820_id
