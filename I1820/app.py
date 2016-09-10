@@ -6,9 +6,10 @@
 #
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-from .log.log import I1820Log
+from .log.log import I1820Log, I1820LogJSONEncoder
 from .bootstrap.ping import PingService
 from . import wapp
+from . import i1820_id
 
 import flask
 import json
@@ -38,15 +39,10 @@ class I1820App(threading.Thread):
             return fn
         return _notification
 
-    def log(self, log: I1820Log):
-        log = {
-            "timestamp": log.timestamp.timestamp(),
-            "type": log.type,
-            "device": log.device,
-            "data": {"states": log.states},
-            "endpoint": log.endpoint
-        }
-        requests.post(self.base_url + 'log', json=log)
+    def log(self, type, device, states):
+        log = I1820Log(type, device, states, str(i1820_id))
+        requests.post(self.base_url + 'log',
+                      json=I1820LogJSONEncoder().encode(log))
 
     @classmethod
     def notification_handler(cls, data: dict):
