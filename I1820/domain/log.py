@@ -36,3 +36,12 @@ class I1820LogJSONEncoder(json.JSONEncoder):
             raise TypeError(
                 "I1820LogJSONEncoder got {} instead of I1820Log.".format(
                     type(obj)))
+
+
+class I1820LogDictDecoder:
+    @staticmethod
+    def decode(obj: dict) -> I1820Log:
+        return I1820Log(obj['type'], obj['device'],
+                        obj['states'], obj['endpoint'],
+                        datetime.datetime.fromtimestamp(
+                            obj['timestamp']))
