@@ -29,7 +29,7 @@ class I1820LogJSONEncoder(json.JSONEncoder):
                 'timestamp': obj.timestamp.timestamp(),
                 'type': obj.type,
                 'device': obj.device,
-                'data': {'states': obj.states},
+                'states': obj.states,
                 'endpoint': obj.endpoint
             }
         else:
