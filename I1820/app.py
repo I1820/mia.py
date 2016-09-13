@@ -20,9 +20,12 @@ import threading
 class I1820App(threading.Thread):
     notification_handlers = {}
 
-    def __init__(self, i1820_ip: str, i1820_port: int):
+    def __init__(self, i1820_ip: str, i1820_port: int,
+                 i1820p_ip: str=None, i1820p_port: int=None):
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
         self.things = []
+        self.host = "0.0.0.0" if i1820p_ip is None else i1820p_ip
+        self.port = 1373 if i1820p_port is None else i1820p_port
         I1820App.notification_handlers = {}
         threading.Thread.__init__(self)
 
@@ -31,7 +34,7 @@ class I1820App(threading.Thread):
 
     def run(self):
         PingService(self.base_url, self.things).ping()
-        wapp.run(debug=False, host="0.0.0.0", port=1373)
+        wapp.run(debug=False, host=self.host, port=self.port)
 
     def notification(self, thing: str):
         def _notification(fn):
