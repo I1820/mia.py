@@ -45,7 +45,7 @@ class I1820App(threading.Thread):
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
         requests.post(self.base_url + 'log',
-                      json=I1820LogJSONEncoder().encode(log))
+                      data=I1820LogJSONEncoder().encode(log))
 
     @classmethod
     def notification_handler(cls, data: dict):
