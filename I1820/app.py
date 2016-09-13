@@ -29,8 +29,8 @@ class I1820App(threading.Thread):
         I1820App.notification_handlers = {}
         threading.Thread.__init__(self)
 
-    def add_thing(self, type, id):
-        self.things.append({'type': type, 'id': id})
+    def add_thing(self, type, id, attributes={}):
+        self.things.append({'type': type, 'id': id, 'attributes': attributes})
 
     def run(self):
         PingService(self.base_url, self.things).ping()
