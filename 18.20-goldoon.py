@@ -4,7 +4,7 @@ import flask
 from I1820.app import I1820App
 from I1820 import wapp
 
-app = I1820App('127.0.0.1', 1373)
+app = I1820App('127.0.0.1', 1373, '0.0.0.0', 3000)
 
 @wapp.route('/goldoon', methods=['PUT'])
 def goldon_handler():
