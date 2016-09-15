@@ -67,5 +67,5 @@ def notification_handler():
 
 @wapp.route('/upload', methods=['POST'])
 def upload_handler():
-    f = request.files['target']
+    f = flask.request.files['target']
     f.save('' + secure_filename(f.filename))
