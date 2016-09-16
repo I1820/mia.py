@@ -16,6 +16,7 @@ import json
 import requests
 import threading
 from werkzeug.utils import secure_filename
+from os.path import expanduser
 
 
 class I1820App(threading.Thread):
@@ -67,5 +68,8 @@ def notification_handler():
 
 @wapp.route('/upload', methods=['POST'])
 def upload_handler():
+    result = {}
     f = flask.request.files['target']
-    f.save('' + secure_filename(f.filename))
+    f.save(expanduser('~/Downloads/') + secure_filename(f.filename))
+    result['status'] = True
+    return json.dumps(result)
