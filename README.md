@@ -3,4 +3,6 @@
 
 ## Introduction
 ![I1820-Plug Architecture](http://aolab.github.io/documentation/architecture/I1820-Plug.jpg)
-Improved 18.20 Raspberry Pi Plugin
+
+Improved 18.20 Raspberry Pi Plugin. You can use it in order to create I1820 Applications
+for your IoT environment :)
