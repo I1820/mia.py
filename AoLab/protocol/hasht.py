@@ -11,6 +11,14 @@ from ..domain.message import AoLabThingMessage
 
 
 class HashtProtocol(AoLabSerialProtocol):
+
+    thing_types = {
+        't': 'temperature',
+        'l': 'light',
+        'h': 'humidity',
+        'm': 'motion'
+    }
+
     def handler(self, message: str):
         parts = message.split(',')
         node = parts[0][1:]
@@ -18,7 +26,7 @@ class HashtProtocol(AoLabSerialProtocol):
         things = []
         for thing in parts[1:-1]:
             things.append({
-                'type': thing[0],
+                'type': self.thing_types[thing[0]],
                 'value': thing[2:],
                 'device': thing[1]
             })
