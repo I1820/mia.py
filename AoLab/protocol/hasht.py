@@ -16,10 +16,13 @@ class HashtProtocol(AoLabSerialProtocol):
         't': 'temperature',
         'l': 'light',
         'h': 'humidity',
-        'm': 'motion'
+        'm': 'motion',
+        'g': 'gas'
     }
 
     def handler(self, message: str) -> AoLabThingMessage:
+        if len(message) == 0 or message[0] != '@':
+            return None
         parts = message.split(',')
         node = parts[0][1:]
         battery = parts[-1][:-1]
