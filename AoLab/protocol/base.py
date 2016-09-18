@@ -7,14 +7,11 @@
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
 import abc
+from ..domain.message import AoLabThingMessage
 
 
 class AoLabSerialProtocol:
 
     @abc.abstractmethod
-    def handle(self, message: str):
-        pass
-
-    @abc.abstractmethod
-    def process(self):
+    def handle(self, message: str) -> AoLabThingMessage:
         pass

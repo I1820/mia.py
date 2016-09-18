@@ -19,7 +19,7 @@ class HashtProtocol(AoLabSerialProtocol):
         'm': 'motion'
     }
 
-    def handler(self, message: str):
+    def handler(self, message: str) -> AoLabThingMessage:
         parts = message.split(',')
         node = parts[0][1:]
         battery = parts[-1][:-1]
@@ -30,7 +30,4 @@ class HashtProtocol(AoLabSerialProtocol):
                 'value': thing[2:],
                 'device': thing[1]
             })
-        AoLabThingMessage(node, battery, *things)
-
-    def process(self):
-        pass
+        return AoLabThingMessage(node, battery, *things)
