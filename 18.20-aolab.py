@@ -13,9 +13,9 @@ if __name__ == '__main__':
     app.start()
     ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
     sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
-
     while True:
         line = sio.readline()
+        print(line)
         data = HashtProtocol().handler(line)
         if data is not None:
             for thing in data.things:
