@@ -20,6 +20,9 @@ class HashtProtocol(AoLabSerialProtocol):
         'g': 'gas'
     }
 
+    def write(self, type, device_id, node_id, command) -> str:
+        return '@%s,%s%s%s.' % (node_id, type, device_id, command)
+
     def handler(self, message: str) -> AoLabThingMessage:
         if len(message) == 0 or message[0] != '@':
             return None
