@@ -26,18 +26,25 @@ def notification():
 
 
 if __name__ == '__main__':
+    # Temperature
     app.add_thing('temperature', '1:1')
     app.add_thing('temperature', '2:1')
     app.add_thing('temperature', '3:1')
     app.add_thing('temperature', '4:1')
+
+    # Humidity
     app.add_thing('humidity', '1:1')
     app.add_thing('humidity', '2:1')
     app.add_thing('humidity', '3:1')
     app.add_thing('humidity', '4:1')
+
+    # Light
     app.add_thing('light', '1:1')
     app.add_thing('light', '2:1')
     app.add_thing('light', '3:1')
     app.add_thing('light', '4:1')
+
+    # Lamp
     app.add_thing('lamp', '1:2')
     app.start()
     threading.Thread(target=notification).start()
