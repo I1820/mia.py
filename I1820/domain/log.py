@@ -22,7 +22,6 @@ class I1820Log:
         self.type = type
         self.device = device
         self.timestamp = timestamp
-        print(str(timestamp))
         self.endpoint = endpoint
 
 
