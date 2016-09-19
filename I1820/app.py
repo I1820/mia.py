@@ -10,6 +10,7 @@ from .domain.log import I1820Log, I1820LogJSONEncoder
 from .bootstrap.ping import PingService
 from . import wapp
 from . import i1820_id
+from .domain.notif import I1820NotificationDictDecoder
 
 import flask
 import json
@@ -27,7 +28,7 @@ class I1820App(threading.Thread):
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
         self.things = []
         self.host = "0.0.0.0" if i1820p_ip is None else i1820p_ip
-        self.port = 1373 if i1820p_port is None else i1820p_port
+        self.port = 1820 if i1820p_port is None else i1820p_port
         I1820App.notification_handlers = {}
         threading.Thread.__init__(self)
 
@@ -52,8 +53,9 @@ class I1820App(threading.Thread):
     @classmethod
     def notification_handler(cls, data: dict):
         results = {}
+        notif = I1820NotificationDictDecoder.decode(data)
         try:
-            results = cls.notification_handlers[data['type']](data)
+            results = cls.notification_handlers[notif.type](notif)
         except KeyError:
             pass
         return results
