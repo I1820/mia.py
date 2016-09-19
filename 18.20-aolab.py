@@ -5,7 +5,7 @@ import io
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
 
-app = I1820App('iot.ceit.ac.ir', 58902, '0.0.0.0', 3000)
+app = I1820App('iot.ceit.aut.ac.ir', 58902, '0.0.0.0', 3000)
 
 
 if __name__ == '__main__':
