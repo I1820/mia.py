@@ -14,11 +14,15 @@ class I1820Log:
     def __init__(self, type: str, device: str,
                  states: dict,
                  endpoint: str,
-                 timestamp: datetime.datetime = datetime.datetime.now()):
+                 timestamp: datetime.datetime = None):
+        if timestamp is None:
+            timestamp = datetime.datetime.utcnow()
+
         self.states = states
         self.type = type
         self.device = device
         self.timestamp = timestamp
+        print(str(timestamp))
         self.endpoint = endpoint
 
 
