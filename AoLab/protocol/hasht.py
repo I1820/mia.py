@@ -12,7 +12,7 @@ from ..domain.message import AoLabThingMessage
 
 class HashtProtocol(AoLabSerialProtocol):
 
-    thing_types = {
+    thing_sensors = {
         't': 'temperature',
         'l': 'light',
         'h': 'humidity',
@@ -20,8 +20,13 @@ class HashtProtocol(AoLabSerialProtocol):
         'g': 'gas'
     }
 
+    thing_actuators = {
+        'lamp': 'l'
+    }
+
     def marshal(self, type, device_id, node_id, command) -> str:
-        return '@%s,%s%s%s.' % (node_id, type, device_id, command)
+        return '@%s,%s%s%s.' % (node_id, self.thing_actuators[type],
+                                device_id, command)
 
     def unmarshal(self, message: str) -> AoLabThingMessage:
         if len(message) == 0 or message[0] != '@':
@@ -32,7 +37,7 @@ class HashtProtocol(AoLabSerialProtocol):
         things = []
         for thing in parts[1:-1]:
             things.append({
-                'type': self.thing_types[thing[0]],
+                'type': self.thing_sensors[thing[0]],
                 'value': thing[2:],
                 'device': thing[1]
             })
