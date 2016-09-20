@@ -25,23 +25,11 @@ def send_notification(data: I1820Notification):
     ser.flush()
 
 if __name__ == '__main__':
-    # Temperature
-    app.add_thing('temperature', '1:1')
-    app.add_thing('temperature', '2:1')
-    app.add_thing('temperature', '3:1')
-    app.add_thing('temperature', '4:1')
-
-    # Humidity
-    app.add_thing('humidity', '1:1')
-    app.add_thing('humidity', '2:1')
-    app.add_thing('humidity', '3:1')
-    app.add_thing('humidity', '4:1')
-
-    # Light
-    app.add_thing('light', '1:1')
-    app.add_thing('light', '2:1')
-    app.add_thing('light', '3:1')
-    app.add_thing('light', '4:1')
+    # MultiSensors
+    app.add_thing('multisensor', '1')
+    app.add_thing('multisensor', '2')
+    app.add_thing('multisensor', '3')
+    app.add_thing('multisensor', '4')
 
     # Lamp
     app.add_thing('lamp', '1:2')
@@ -52,7 +40,7 @@ if __name__ == '__main__':
         print(line)
         data = HashtProtocol().unmarshal(line)
         if data is not None:
+            states = {}
             for thing in data.things:
-                app.log(thing['type'],
-                        "%s:%s" % (data.node_id, thing['device']),
-                        {thing['type']: thing['value']})
+                states[thing['type']] = thing['value']
+            app.log('multisensor', data.node_id, states)
