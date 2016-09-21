@@ -15,7 +15,7 @@ sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 @app.notification('lamp')
 def send_notification(data: I1820Notification):
-    node_id, device_id = data.device_id.split(':')
+    node_id, device_id = data.device.split(':')
     command = '1' if data.settings['on'] else '0'
 
     time.sleep(5)
@@ -32,7 +32,8 @@ if __name__ == '__main__':
     app.add_thing('multisensor', '4')
 
     # Lamp
-    app.add_thing('lamp', '1:2')
+    for i in range(1, 9):
+        app.add_thing('lamp', '1:%d' % i)
 
     app.start()
     while True:
