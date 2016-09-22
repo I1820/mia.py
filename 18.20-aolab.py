@@ -36,9 +36,10 @@ async def serial_write(command):
 
 def serial_read():
     line = sio.readline()
+    if len(line) != 0:
+        print(line)
     data = HashtProtocol().unmarshal(line)
     if data is not None:
-        print(line)
         states = {}
         for thing in data.things:
             states[thing['type']] = thing['value']
