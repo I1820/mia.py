@@ -20,5 +20,5 @@ if __name__ == '__main__':
     i = 10
     while True:
         i = (i + 10) % 100
-        app.log('temperature', '1', {'temperature': i})
+        app.log('temperature', '1', {'temperature': str(i)})
         time.sleep(10)
