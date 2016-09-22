@@ -16,7 +16,7 @@ loop = asyncio.get_event_loop()
 
 
 @app.notification('lamp')
-def send_notification(data: I1820Notification):
+def lamp_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
     command = '1' if data.settings['on'] else '0'
 
@@ -33,16 +33,16 @@ async def serial_write(command):
     sio.flush()
     ser.flush()
 
-async def serial_read():
-    while True:
-        line = await sio.readline()
-        data = HashtProtocol().unmarshal(line)
-        if data is not None:
-            print(line)
-            states = {}
-            for thing in data.things:
-                states[thing['type']] = thing['value']
-            app.log('multisensor', data.node_id, states)
+
+def serial_read():
+    line = sio.readline()
+    data = HashtProtocol().unmarshal(line)
+    if data is not None:
+        print(line)
+        states = {}
+        for thing in data.things:
+            states[thing['type']] = thing['value']
+        app.log('multisensor', data.node_id, states)
 
 if __name__ == '__main__':
     # MultiSensors
@@ -56,5 +56,5 @@ if __name__ == '__main__':
         app.add_thing('lamp', '1:%d' % i)
 
     app.start()
-    loop.call_soon(loop.create_tas, serial_read())
+    loop.add_reader(ser, serial_read)
     loop.run_forever()
