@@ -32,6 +32,7 @@ void setup()
 	radio.startListening();
 	radio.printDetails();
 }
+
 void loop()
 {
 	radio.startListening();
@@ -41,55 +42,30 @@ void loop()
 	radio.openReadingPipe(0, pipes[3]);
 	radio.openReadingPipe(0, pipes[4]);
 	radio.openReadingPipe(1, pipes[5]);
+
 	if (radio.available()) {
-		char text[33] = {0};
-		radio.read(&text, sizeof(text));
-		Serial.println(text);
-		switch (text[1]) {
-			case '1':
-				radio.openWritingPipe(pipes[0]);
-				radio.stopListening();
-				delayMicroseconds(200);
-				for(int i = 0; i < 2; i++){
-					radio.write("ack1", sizeof("ack1"));
-					delayMicroseconds(200);
-				}
-				break;
-			case '2':
-				radio.openWritingPipe(pipes[0]);
-				radio.stopListening();
-				delayMicroseconds(200);
-				for (int i = 0; i < 2; i++) {
-					radio.write("ack2", sizeof("ack2"));
-					delayMicroseconds(200);
-				}
-				break;
-			case '3':
-				radio.openWritingPipe(pipes[0]);
-				radio.stopListening();
-				delayMicroseconds(200);
-				for(int i = 0; i < 2; i++) {
-					radio.write("ack3", sizeof("ack3"));
-					delayMicroseconds(300);
-				}
-				break;
-			case '4':
-				radio.openWritingPipe(pipes[0]);
-				radio.stopListening();
-				delayMicroseconds(200);
-				for (int i = 0; i < 2; i++){
-					radio.write("ack4", sizeof("ack4"));
-					delayMicroseconds(300);
-				}
-				break;
+		char ingress[33] = {0};
+		radio.read(&ingress, sizeof(ingress));
+
+		/* Send ingress information to serial */
+		Serial.println(ingress);
+		
+		/* Send back the acknowledgement */
+		radio.openWritingPipe(pipes[0]);
+		radio.stopListening();
+		delayMicroseconds(200);
+		for(int i = 0; i < 2; i++){
+			radio.write("ack" + ingress[1], sizeof("ack") + 1);
+			delayMicroseconds(200);
 		}
 	}
+
 	int index = 0;
 	char charbuff[50];
 	if (Serial.available())
 	{
 		String input = Serial.readString();
-		Serial.println(input);
+		Serial.println("r" + input);
 
 		for (int i = 0; i < 32; i++) {
 			if (input[i] == '.')
