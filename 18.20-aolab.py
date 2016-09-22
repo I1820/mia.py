@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import serial
 import io
-import asyncio
+import time
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -9,10 +9,8 @@ from I1820.domain.notif import I1820Notification
 
 app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
 
-ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
+ser = serial.serial_for_url('/dev/ttyUSB1', baudrate=9600, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
-
-loop = asyncio.get_event_loop()
 
 
 @app.notification('lamp')
@@ -23,15 +21,14 @@ def lamp_notification(data: I1820Notification):
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
 
-    loop.call_soon_threadsafe(loop.create_task,
-                              serial_write(command_raw))
+    serial_write(command_raw)
 
-async def serial_write(command):
-    await asyncio.sleep(5)
+
+def serial_write(command):
+    time.sleep(1.5)
     sio.write(command)
 
     sio.flush()
-    ser.flush()
 
 
 def serial_read():
@@ -57,5 +54,5 @@ if __name__ == '__main__':
         app.add_thing('lamp', '1:%d' % i)
 
     app.start()
-    loop.add_reader(ser, serial_read)
-    loop.run_forever()
+    while True:
+        serial_read()
