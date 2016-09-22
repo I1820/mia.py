@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import serial
 import io
-import time
+import asyncio
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -12,17 +12,37 @@ app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
+loop = asyncio.get_event_loop()
+
 
 @app.notification('lamp')
 def send_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
     command = '1' if data.settings['on'] else '0'
 
-    time.sleep(5)
-    sio.write(HashtProtocol().marshal(data.type, device_id,
-                                      node_id, command))
+    command_raw = HashtProtocol().marshal(data.type, device_id,
+                                          node_id, command)
+
+    loop.call_soon_threadsafe(loop.create_task,
+                              serial_write(command_raw))
+
+async def serial_write(command):
+    await asyncio.sleep(5)
+    sio.write(command)
+
     sio.flush()
     ser.flush()
+
+async def serial_read():
+    while True:
+        line = await sio.readline()
+        data = HashtProtocol().unmarshal(line)
+        if data is not None:
+            print(line)
+            states = {}
+            for thing in data.things:
+                states[thing['type']] = thing['value']
+            app.log('multisensor', data.node_id, states)
 
 if __name__ == '__main__':
     # MultiSensors
@@ -36,12 +56,5 @@ if __name__ == '__main__':
         app.add_thing('lamp', '1:%d' % i)
 
     app.start()
-    while True:
-        line = sio.readline()
-        print(line)
-        data = HashtProtocol().unmarshal(line)
-        if data is not None:
-            states = {}
-            for thing in data.things:
-                states[thing['type']] = thing['value']
-            app.log('multisensor', data.node_id, states)
+    loop.call_soon(loop.create_tas, serial_read())
+    loop.run_forever()
