@@ -55,7 +55,10 @@ void loop()
 		radio.stopListening();
 		delayMicroseconds(200);
 		for(int i = 0; i < 2; i++){
-			radio.write("ack" + ingress[1], sizeof("ack") + 1);
+			char ack[5] = "ack";
+			ack[3] = ingress[1];
+			ack[4] = 0;
+			radio.write(ack, 4);
 			delayMicroseconds(200);
 		}
 	}
