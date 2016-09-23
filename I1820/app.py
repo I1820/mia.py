@@ -25,12 +25,21 @@ class I1820App(threading.Thread):
 
     def __init__(self, i1820_ip: str, i1820_port: int,
                  i1820p_ip: str=None, i1820p_port: int=None):
+        # I1820 URL
         self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
+
+        # IoT Things
         self.things = []
+
+        # Listening Interface
         self.host = "0.0.0.0" if i1820p_ip is None else i1820p_ip
         self.port = 1820 if i1820p_port is None else i1820p_port
+
+        # Notifications
         I1820App.notification_handlers = {}
-        threading.Thread.__init__(self)
+
+        # Service Thread
+        threading.Thread.__init__(self, daemon=True)
 
     def add_thing(self, type, id, attributes={}):
         self.things.append({'type': type, 'id': id, 'attributes': attributes})
