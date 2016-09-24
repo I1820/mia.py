@@ -9,7 +9,7 @@ from I1820.domain.notif import I1820Notification
 
 app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
 
-ser = serial.serial_for_url('/dev/ttyUSB1', baudrate=9600, timeout=1)
+ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 
