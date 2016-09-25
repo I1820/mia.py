@@ -45,6 +45,7 @@ class I1820App(threading.Thread):
         self.things.append({'type': type, 'id': id, 'attributes': attributes})
 
     def run(self):
+        print(" * Node ID: %s" % i1820_id)
         PingService(self.base_url, self.things).ping()
         wapp.run(debug=False, host=self.host, port=self.port)
 
