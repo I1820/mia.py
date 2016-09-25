@@ -54,12 +54,14 @@ void loop()
 		radio.openWritingPipe(pipes[0]);
 		radio.stopListening();
 		delayMicroseconds(200);
-		for(int i = 0; i < 2; i++){
-			char ack[5] = "ack";
-			ack[3] = ingress[1];
-			ack[4] = 0;
-			radio.write(ack, 4);
-			delayMicroseconds(200);
+		if (ingress[0] == '@') {
+		  	for(int i = 0; i < 2; i++){
+				char ack[5] = "ack";
+				ack[3] = ingress[1];
+				ack[4] = 0;
+				radio.write(ack, 4);
+				delayMicroseconds(200);
+			}
 		}
 	}
 
