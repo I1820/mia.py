@@ -49,13 +49,13 @@ void loop()
 
 		/* Send ingress information to serial */
 		Serial.println(ingress);
-		
+
 		/* Send back the acknowledgement */
 		radio.openWritingPipe(pipes[0]);
 		radio.stopListening();
 		delayMicroseconds(200);
 		if (ingress[0] == '@') {
-		  	for(int i = 0; i < 2; i++){
+			for(int i = 0; i < 2; i++){
 				char ack[5] = "ack";
 				ack[3] = ingress[1];
 				ack[4] = 0;
@@ -65,20 +65,22 @@ void loop()
 		}
 	}
 
-	int index = 0;
-	char charbuff[50];
 	if (Serial.available())
 	{
 		String input = Serial.readString();
-		Serial.println("r" + input);
-
-		for (int i = 0; i < 32; i++) {
-			if (input[i] == '.')
-				index = i + 1;
-		}
-		input.toCharArray(charbuff, index + 1);
-		radio.openWritingPipe(pipes[5]);
-		radio.stopListening();
-		radio.write(charbuff, index);
+		int index = 0;
+		char charbuff[32];
+		do {
+			index = input.indexOf('.');
+			if (index != -1 && index < 31) {
+				egress = input.substring(0, index)
+				Serial.println("r" + egress);
+				egress.toCharArray(charbuff, 32);
+				radio.openWritingPipe(pipes[5]);
+				radio.stopListening();
+				radio.write(charbuff, index + 1);
+				input = egress
+			}
+		} while(index != -1 && input.length() > 0);
 	}
 }
