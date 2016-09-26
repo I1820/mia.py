@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import serial
 import io
-import time
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -25,9 +24,7 @@ def lamp_notification(data: I1820Notification):
 
 
 def serial_write(command):
-    time.sleep(1.5)
     sio.write(command)
-
     sio.flush()
 
 
@@ -45,6 +42,7 @@ def serial_read():
 if __name__ == '__main__':
     # MultiSensors
     app.add_thing('multisensor', '1')
+    app.add_thing('lamp', '2:1')
 
     app.start()
     while True:
