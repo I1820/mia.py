@@ -71,15 +71,16 @@ void loop()
 		int index = 0;
 		char charbuff[32];
 		do {
+			Serial.println("s" + input);
 			index = input.indexOf('.');
 			if (index != -1 && index < 31) {
-				egress = input.substring(0, index)
+				String egress = input.substring(0, index + 1);
 				Serial.println("r" + egress);
 				egress.toCharArray(charbuff, 32);
 				radio.openWritingPipe(pipes[5]);
 				radio.stopListening();
 				radio.write(charbuff, index + 1);
-				input = egress
+				input = input.substring(index + 1);
 			}
 		} while(index != -1 && input.length() > 0);
 	}
