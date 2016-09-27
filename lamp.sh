@@ -7,22 +7,26 @@
 #
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-
-for i in `seq 1 8`; do
-	curl -X PUT -H "Content-Type: application/json" -d "{
+for i in `seq 1 7`; do
+	curl -X PUT -H "Content-Type: application/json" -d
+	"{
 		\"type\": \"lamp\",
-		\"rpi_id\": \"b07882d6-5c28-597b-89f9-d250f74b0bad\",
-	      	\"device_id\": \"1:5\",
-	      	\"settings\": {
+		\"rpi_id\": \"066156d8-df62-5894-809b-d51ec5a2ff3d\",
+		\"device_id\": \"1:$i\",
+		\"settings\": {
 			\"on\": true
 		}
 	}" "iot.ceit.aut.ac.ir:58902/thing"
-	curl -X PUT -H "Content-Type: application/json" -d "{
+	
+	curl -X PUT -H "Content-Type: application/json" -d
+	"{
 		\"type\": \"lamp\",
-		\"rpi_id\": \"b07882d6-5c28-597b-89f9-d250f74b0bad\",
-	      	\"device_id\": \"1:5\",
-	      	\"settings\": {
+		\"rpi_id\": \"066156d8-df62-5894-809b-d51ec5a2ff3d\",
+		\"device_id\": \"1:$i\",
+		\"settings\": {
 			\"on\": false
 		}
-	}" "iot.ceit.aut.ac.ir:58902/thing"
+	}" "192.168.128.90:8080/thing"
+	
+	sleep 1
 done
