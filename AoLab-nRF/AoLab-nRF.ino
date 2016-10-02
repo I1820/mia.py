@@ -68,7 +68,7 @@ void loop()
 	}
 
 	if (Serial.available()) {
-		c = Serial.readString();
+		String c = Serial.readString();
 		
 		int index = 0;
 		char charbuff[50];
@@ -91,7 +91,7 @@ void loop()
 			if (radio.available()) {
 				char text[33] = {0};
 				radio.read(&text, 33);
-				Serial.println("r" + text);
+				Serial.println("r" + String(text));
 				if (!strcmp(text, "set1")) {
 					flag = true;
 					break;
