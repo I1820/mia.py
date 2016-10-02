@@ -47,7 +47,7 @@ if __name__ == '__main__':
     app.add_thing('multisensor', '4')
 
     # Lamp
-    for i in range(1, 9):
+    for i in range(1, 10):
         app.add_thing('lamp', '1:%d' % i)
 
     app.start()
