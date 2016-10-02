@@ -6,8 +6,10 @@
 # [] Creation Date : 21-09-2016
 #
 # [] Improved By : Iman Tabrizian (tabrizian@outlook.com)
+#
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
+
 function turn {
 	curl -X PUT -H "Content-Type: application/json" -d "{
 		\"type\": \"lamp\",
