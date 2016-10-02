@@ -23,6 +23,17 @@ def lamp_notification(data: I1820Notification):
     serial_write(command_raw)
 
 
+@app.notification('cooler')
+def cooler_notification(data: I1820Notification):
+    node_id, device_id = data.device.split(':')
+    command = '1' if data.settings['on'] else '0'
+
+    command_raw = HashtProtocol().marshal(data.type, device_id,
+                                          node_id, command)
+
+    serial_write(command_raw)
+
+
 def serial_write(command):
     sio.write(command)
     sio.flush()
