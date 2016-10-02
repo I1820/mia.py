@@ -13,9 +13,10 @@ xbee = ZigBee(serial_port)
 
 @app.notification('lamp')
 def led_notification(data: I1820Notification):
-    device_id = data.device
+    # device_id = data.device
     command = b'\x05' if data.settings['on'] else b'\x04'
-    xbee.remote_at(dest_addr_long=device_id, command=b'D1', parameter=command)
+    xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xc1\xa9o',
+                   command=b'D1', parameter=command)
 
 
 if __name__ == '__main__':
@@ -29,6 +30,7 @@ if __name__ == '__main__':
         if (len(sample.keys()) == 4):
             humidity = str(sample['adc-2'])
             temperature = str(sample['adc-1'])
+            temperature = temperature[:2] + '.' + temperature[2:]
             light = str(sample['adc-0'])
             app.log('multisensor', '1', {'humidity': humidity,
                                          'temperature': temperature,
