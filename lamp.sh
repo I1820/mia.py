@@ -10,7 +10,7 @@
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
 
-function turn {
+turn() {
 	curl -X PUT -H "Content-Type: application/json" -d "{
 		\"type\": \"lamp\",
 		\"rpi_id\": \"066156d8-df62-5894-809b-d51ec5a2ff3d\",
@@ -21,7 +21,7 @@ function turn {
 	}" "192.168.128.90:8080/thing"
 }
 
-function bandari {
+bandari() {
   status=true
   for i in `seq 1 9`; do
     turn $i true
@@ -31,7 +31,7 @@ function bandari {
   done
 }
 
-function zabdari {
+zabdari() {
   turn 1 true
   turn 5 true
   turn 9 true
