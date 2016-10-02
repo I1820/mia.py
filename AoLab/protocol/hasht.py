@@ -21,7 +21,8 @@ class HashtProtocol(AoLabSerialProtocol):
     }
 
     thing_actuators = {
-        'lamp': 'l'
+        'lamp': 'l',
+        'cooler': 'c'
     }
 
     def marshal(self, type, device_id, node_id, command) -> str:
