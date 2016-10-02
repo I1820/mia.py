@@ -22,12 +22,10 @@ function turn {
 function bandari {
   status=true
   for i in `seq 1 9`; do
-    turn $i $status
-    if ["$status" = "true"]; then
-      status=false
-    else
-      status=true
-    fi
+    turn $i true
+  done
+  for i in `seq 1 9`; do
+    turn $i false
   done
 }
 
