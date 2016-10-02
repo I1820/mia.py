@@ -42,6 +42,10 @@ function zabdari {
   turn 7 false
 }
 
-if ["$1" = "bandari"]; then
+if [ "$1" = "bandari" ]; then
+  echo "Let's do a bandari"
   bandari
+elif [ "$1" = "zabdari" ]; then
+  echo "Let's do a zabdari"
+  zabdari
 fi
