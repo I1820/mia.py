@@ -10,6 +10,12 @@
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
 
+i1820_address=${1:-"192.168.128.90"}
+echo "[I1820] using $i1820_address as I1820 server"
+
+# Trun
+# parameter 1: lamp identification - string
+# parameter 2: true -> on | false -> off - bool
 turn() {
 	curl -X PUT -H "Content-Type: application/json" -d "{
 		\"type\": \"lamp\",
@@ -18,7 +24,8 @@ turn() {
 		\"settings\": {
 			\"on\": $2
 		}
-	}" "192.168.128.90:8080/thing"
+	}" "$i1820_address:8080/thing"
+	sleep 1
 }
 
 bandari() {
@@ -42,10 +49,26 @@ zabdari() {
   turn 7 false
 }
 
-if [ "$1" = "bandari" ]; then
-  echo "Let's do a bandari"
-  bandari
-elif [ "$1" = "zabdari" ]; then
-  echo "Let's do a zabdari"
-  zabdari
-fi
+osPS3=$PS3
+PS3="[I1820] Please choose your way [ENTER to list options]:"
+install_type=0
+select t in "Let's do a bandari" "Let's do a zabdari" "Quit"; do
+	if [ ! -z "$t" ]; then
+		case $REPLY in
+			1)
+				bandari
+				break
+				;;
+			2)
+				zabdari
+				break
+				;;
+			3)
+				exit
+				;;
+		esac
+	else
+		echo "$REPLY in not a valid option"
+	fi
+done
+PS3=$oPS3
