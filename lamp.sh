@@ -8,19 +8,40 @@
 # [] Improved By : Iman Tabrizian (tabrizian@outlook.com)
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-status=true
-for i in `seq 1 9`; do
+function turn {
 	curl -X PUT -H "Content-Type: application/json" -d "{
 		\"type\": \"lamp\",
 		\"rpi_id\": \"066156d8-df62-5894-809b-d51ec5a2ff3d\",
-		\"device_id\": \"1:$i\",
+		\"device_id\": \"1:$1\",
 		\"settings\": {
-			\"on\": $status
+			\"on\": $2
 		}
 	}" "192.168.128.90:8080/thing"
-  if ["$status" = "true"]; then
-    status=false
-  else
-    status=true
-  fi
-done
+}
+
+function bandari {
+  status=true
+  for i in `seq 1 9`; do
+    turn $i $status
+    if ["$status" = "true"]; then
+      status=false
+    else
+      status=true
+    fi
+  done
+}
+
+function zabdari {
+  turn 1 true
+  turn 5 true
+  turn 9 true
+  turn 7 true
+  turn 1 false
+  turn 5 false
+  turn 9 false
+  turn 7 false
+}
+
+if ["$1" = "bandari"]; then
+  bandari
+fi
