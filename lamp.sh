@@ -11,6 +11,7 @@
 # =======================================
 
 i1820_address=${1:-"192.168.128.90"}
+node_id="6c6319f9-bbc3-5fe0-9475-c12695250865"
 echo "[I1820] using $i1820_address as I1820 server"
 
 # Trun
@@ -19,7 +20,7 @@ echo "[I1820] using $i1820_address as I1820 server"
 turn() {
 	curl -X PUT -H "Content-Type: application/json" -d "{
 		\"type\": \"lamp\",
-		\"rpi_id\": \"066156d8-df62-5894-809b-d51ec5a2ff3d\",
+		\"rpi_id\": \"$node_id\",
 		\"device_id\": \"1:$1\",
 		\"settings\": {
 			\"on\": $2
@@ -51,7 +52,6 @@ zabdari() {
 
 osPS3=$PS3
 PS3="[I1820] Please choose your way [ENTER to list options]:"
-install_type=0
 select t in "Let's do a bandari" "Let's do a zabdari" "Quit"; do
 	if [ ! -z "$t" ]; then
 		case $REPLY in
