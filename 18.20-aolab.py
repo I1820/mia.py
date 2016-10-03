@@ -59,7 +59,8 @@ if __name__ == '__main__':
 
     # Lamp
     for i in range(1, 10):
-        app.add_thing('lamp', '1:%d' % i)
+        for j in range(1, 3):
+            app.add_thing('lamp', '%d:%d' % (j, i))
 
     app.start()
     while True:
