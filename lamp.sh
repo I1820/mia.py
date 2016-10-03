@@ -15,39 +15,53 @@ node_id=${2:-"066156d8-df62-5894-809b-d51ec5a2ff3d"}
 echo "[I1820] using $i1820_address as I1820 server"
 
 # Trun
-# parameter 1: lamp identification - string
-# parameter 2: true -> on | false -> off - bool
+# parameter 1: lamp node - string
+# parameter 2: lamp identification - string
+# parameter 3: true -> on | false -> off - bool
 turn() {
 	curl -X PUT -H "Content-Type: application/json" -d "{
 		\"type\": \"lamp\",
 		\"rpi_id\": \"$node_id\",
-		\"device_id\": \"1:$1\",
+		\"device_id\": \"$1:$2\",
 		\"settings\": {
-			\"on\": $2
+			\"on\": $3
 		}
 	}" "$i1820_address:8080/thing"
-	sleep 1
+	sleep 2
 }
 
 bandari() {
-  status=true
   for i in `seq 1 9`; do
-    turn $i true
+    turn 1 $i true
+    turn 2 $i true
   done
   for i in `seq 1 9`; do
-    turn $i false
+    turn 1 $i false
+    turn 2 $i false
   done
 }
 
 zabdari() {
-  turn 1 true
-  turn 5 true
-  turn 9 true
-  turn 7 true
-  turn 1 false
-  turn 5 false
-  turn 9 false
-  turn 7 false
+  turn 1 1 true
+  turn 2 1 true
+  turn 1 5 true
+  turn 2 5 true
+  turn 1 9 true
+  turn 2 9 true
+  turn 1 7 true
+  turn 2 7 true
+  turn 1 3 true
+  turn 2 3 true
+  turn 1 1 false
+  turn 2 1 false
+  turn 1 5 false
+  turn 2 5 false
+  turn 1 9 false
+  turn 2 9 false
+  turn 1 7 false
+  turn 2 7 false
+  turn 1 3 false
+  turn 2 3 false
 }
 
 osPS3=$PS3
