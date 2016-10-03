@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import serial
 import io
-import os
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
