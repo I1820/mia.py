@@ -7,11 +7,28 @@ from I1820 import wapp
 app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
 
 
-@wapp.route('/next', methods=['GET'])
-def next_slide_handler():
-    call(["./next.sh"])
+@wapp.route('/open/<path:path>', methods=['GET'])
+def open_slide_handler(path):
+    call(["xpdf", "-fullscreen", "~/Desktop/%s" % path])
     return ""
 
+
+@wapp.route('/next', methods=['GET'])
+def next_slide_handler():
+    call(["./next.sh", "Page_Down"])
+    return ""
+
+
+@wapp.route('/back', methods=['GET'])
+def back_slide_handler():
+    call(["./next.sh", "Page_Up"])
+    return ""
+
+
+@wapp.route('/quit', methods=['GET'])
+def quit_slide_handler():
+    call(["./next.sh", "q"])
+    return ""
 
 if __name__ == '__main__':
     app.start()
