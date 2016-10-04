@@ -1,7 +1,7 @@
 #!/bin/bash
 # In The Name Of God
 # ========================================
-# [] File Name : next.sh
+# [] File Name : presenter.sh
 #
 # [] Creation Date : 04-10-2016
 #
