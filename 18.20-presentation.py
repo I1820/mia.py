@@ -9,7 +9,7 @@ app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
 
 @wapp.route('/open/<path:path>', methods=['GET'])
 def open_slide_handler(path):
-    Popen("xpdf -fullscreen ~/Desktop/%s " % path)
+    Popen("xpdf -fullscreen ~/Desktop/%s " % path, shell=True)
     return ""
 
 
