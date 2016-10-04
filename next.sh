@@ -7,6 +7,7 @@
 #
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-for w in `xdotool search LibreOffice`; do
-	xdotool key --window $w Page_Down
+
+for w in `xdotool search xpdf`; do
+	xdotool key --window $w $1
 done
