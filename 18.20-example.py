@@ -14,7 +14,7 @@ def lamp_notification(data: I1820Notification):
     print(data)
 
 if __name__ == '__main__':
-    app.add_thing('lamp', '0')
+    app.add_thing('lamp', '1:1')
     app.add_thing('temperature', '1')
     app.start()
     i = 10
