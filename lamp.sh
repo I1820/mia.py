@@ -12,7 +12,9 @@
 
 i1820_address=${1:-"192.168.128.90"}
 node_id=${2:-"066156d8-df62-5894-809b-d51ec5a2ff3d"}
+
 echo "[I1820] using $i1820_address as I1820 server"
+echo "[I1820] using $node_id as your target RPi ID."
 
 # Trun
 # parameter 1: lamp node - string
@@ -27,6 +29,8 @@ turn() {
 			\"on\": $3
 		}
 	}" "$i1820_address:8080/thing"
+	echo ""
+	echo "=============================================================================="
 	sleep 2
 }
 
