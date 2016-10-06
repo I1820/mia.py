@@ -68,31 +68,37 @@ void loop()
 	}
 
 	if (Serial.available()) {
-		String c = Serial.readString();
+		String egress = Serial.readString();
 		
 		int index = 0;
 		char charbuff[50];
 		
 		for(int i = 0; i < 32; i++) {
-			if(c[i] == '.')
+			if(egress[i] == '.')
 				index = i + 1;
 		}
-		c.toCharArray(charbuff, index + 1);
+		egress.toCharArray(charbuff, index + 1);
 		radio.openWritingPipe(pipes[5]);
 		radio.stopListening();
 		radio.write(charbuff,index);
+		delay(3);
+		radio.startListening();
+		radio.openReadingPipe(0, pipes[5])
 
 		/* waiting for the ack from actuator */
 
 		int flag = false;
 		/* stopwatch reseting */
 		stopwatch = 0;
+		char ack[5] = "set";
+		ack[3] = charbuff[1];
+		ack[4] = 0;
 		while (interval > stopwatch && flag == false) {
 			if (radio.available()) {
-				char text[33] = {0};
-				radio.read(&text, 33);
-				Serial.println("r" + String(text));
-				if (!strcmp(text, "set1")) {
+				char ingress[33] = {0};
+				radio.read(&ingress, 33);
+				Serial.println("r" + String(ingress));
+				if (!strcmp(ingress, ack)) {
 					flag = true;
 					break;
 				}
