@@ -6,10 +6,10 @@
 #
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-import requests
 import threading
 import logging
 from .. import i1820_id
+from .. import i1820_session
 
 
 log = logging.getLogger('ping')
@@ -26,7 +26,7 @@ class PingService:
             'things': self.things
         }
         try:
-            requests.post(self.base_url + 'discovery', json=message)
+            i1820_session.post(self.base_url + 'discovery', json=message)
         except Exception as e:
             log.error('Ping request failed: %s' % e)
         threading.Timer(10, self.ping).start()
