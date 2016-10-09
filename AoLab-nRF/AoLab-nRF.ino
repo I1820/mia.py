@@ -25,8 +25,9 @@ void setup()
 	printf_begin();
 	radio.begin();
 	radio.setPALevel(RF24_PA_MAX);
+	radio.setDataRate(RF24_250KBPS);
 	radio.setRetries(10,5);
-	radio.setChannel(108);
+	radio.setChannel(0);
 	radio.openReadingPipe(0, pipes[0]);
 	radio.openReadingPipe(0, pipes[1]);
 	radio.openReadingPipe(0, pipes[2]);
@@ -83,7 +84,7 @@ void loop()
 		radio.write(charbuff,index);
 		delay(3);
 		radio.startListening();
-		radio.openReadingPipe(0, pipes[5])
+		radio.openReadingPipe(0, pipes[5]);
 
 		/* waiting for the ack from actuator */
 
