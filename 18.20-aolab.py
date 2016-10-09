@@ -56,6 +56,9 @@ if __name__ == '__main__':
     app.add_thing('multisensor', '2')
     app.add_thing('multisensor', '3')
     app.add_thing('multisensor', '4')
+    app.add_thing('multisensor', '5')
+    app.add_thing('multisensor', '6')
+    app.add_thing('multisensor', '7')
 
     # Lamp
     for i in range(1, 10):
