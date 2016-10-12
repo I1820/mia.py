@@ -16,8 +16,6 @@ from .domain.notif import I1820NotificationDictDecoder
 import flask
 import json
 import threading
-from werkzeug.utils import secure_filename
-from os.path import expanduser
 
 
 class I1820App(threading.Thread):
@@ -75,13 +73,4 @@ class I1820App(threading.Thread):
 def notification_handler():
     data = flask.request.get_json(force=True)
     result = I1820App.notification_handler(data)
-    return json.dumps(result)
-
-
-@wapp.route('/upload', methods=['POST'])
-def upload_handler():
-    result = {}
-    f = flask.request.files['target']
-    f.save(expanduser('~/Downloads/') + secure_filename(f.filename))
-    result['status'] = True
     return json.dumps(result)
