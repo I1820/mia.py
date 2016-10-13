@@ -69,7 +69,7 @@ class I1820App:
         if not isinstance(notif, I1820Notification):
             return
 
-        if notif.endpoint != i1820_id:
+        if notif.endpoint != str(i1820_id):
             return
 
         try:
