@@ -62,7 +62,7 @@ void loop()
 				ack[3] = ingress[1];
 				ack[4] = 0;
 				radio.write(ack, 4);
-				delayMicroseconds(200);
+				delayMicroseconds(300);
 			}
 		}
 
