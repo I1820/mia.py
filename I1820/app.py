@@ -8,11 +8,11 @@
 # =======================================
 from .domain.log import I1820Log
 from .domain.notif import I1820Notification
-from .bootstrap.ping import PingService
 from . import i1820_id
 
 import paho.mqtt.client as mqtt
 import bson
+import threading
 
 
 class I1820App:
@@ -21,8 +21,6 @@ class I1820App:
         self.client = mqtt.Client()
         self.client.connect(mqtt_ip, mqtt_port)
         self.client.on_connect = self._on_connect
-        self.message_callback_add('I1820/%s/event' % token,
-                                  self._on_notification)
 
         # API Token
         self.token = token
@@ -38,7 +36,7 @@ class I1820App:
 
     def run(self):
         print(" * Node ID: %s" % i1820_id)
-        PingService(self.base_url, self.things).ping()
+        self._ping()
         self.client.loop_start()
 
     def notification(self, thing: str):
@@ -50,6 +48,20 @@ class I1820App:
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
         self.client.publish('I1820/%s/log' % self.token, bson.dumps(log))
+
+    def _ping(self):
+        message = {
+            'rpi_id': str(i1820_id),
+            'things': self.things
+        }
+        self.client.publish('I1820/%s/discovery' % self.token,
+                            bson.dumps(message))
+        threading.Timer(10, self._ping).start()
+
+    def _on_connect(self, client, userdata, flags, rc):
+        client.subscribe('I1820/%s/event' % self.token)
+        client.message_callback_add('I1820/%s/event' % self.token,
+                                    self._on_notification)
 
     def _on_notification(self, client, userdata, message):
         notif = bson.loads(message.payload)
