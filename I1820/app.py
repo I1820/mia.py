@@ -59,8 +59,8 @@ class I1820App:
         threading.Timer(10, self._ping).start()
 
     def _on_connect(self, client, userdata, flags, rc):
-        client.subscribe('I1820/%s/event' % self.token)
-        client.message_callback_add('I1820/%s/event' % self.token,
+        client.subscribe('I1820/%s/notification' % self.token)
+        client.message_callback_add('I1820/%s/notification' % self.token,
                                     self._on_notification)
 
     def _on_notification(self, client, userdata, message):
