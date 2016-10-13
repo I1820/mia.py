@@ -9,14 +9,10 @@
 from .domain.log import I1820Log
 from .domain.notif import I1820Notification
 from .bootstrap.ping import PingService
+from . import i1820_id
 
 import paho.mqtt.client as mqtt
-import uuid
 import bson
-
-i1820_id = uuid.uuid5(uuid.NAMESPACE_URL,
-                      'I1820://%s.aolab.ceit.aut.ac.ir' % uuid.getnode())
-token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
 
 class I1820App:
@@ -60,7 +56,7 @@ class I1820App:
         if not isinstance(notif, I1820Notification):
             return
 
-        if notif.endpoint != self.i1820_id:
+        if notif.endpoint != i1820_id:
             return
 
         try:
