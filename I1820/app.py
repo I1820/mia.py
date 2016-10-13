@@ -6,38 +6,35 @@
 #
 # [] Created By : Parham Alvani (parham.alvani@gmail.com)
 # =======================================
-from .domain.log import I1820Log, I1820LogJSONEncoder
+from .domain.log import I1820Log
+from .domain.notif import I1820Notification
 from .bootstrap.ping import PingService
-from . import wapp
-from . import i1820_id
-from . import i1820_session
-from .domain.notif import I1820NotificationDictDecoder
 
-import flask
-import json
-import threading
+import paho.mqtt.client as mqtt
+import uuid
+import bson
+
+i1820_id = uuid.uuid5(uuid.NAMESPACE_URL,
+                      'I1820://%s.aolab.ceit.aut.ac.ir' % uuid.getnode())
+token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
 
-class I1820App(threading.Thread):
-    notification_handlers = {}
+class I1820App:
+    def __init__(self, mqtt_ip: str, mqtt_port: int, t: str):
+        # MQTT Up and Running
+        self.client = mqtt.Client()
+        self.client.connect(mqtt_ip, mqtt_port)
+        self.client.on_connect = self._on_connect
+        self.message_callback_add('I1820/%s/event' % t, self._on_notification)
 
-    def __init__(self, i1820_ip: str, i1820_port: int,
-                 i1820p_ip: str=None, i1820p_port: int=None):
-        # I1820 URL
-        self.base_url = "http://%s:%d/" % (i1820_ip, i1820_port)
+        # API Token
+        self.token = t
 
         # IoT Things
         self.things = []
 
-        # Listening Interface
-        self.host = "0.0.0.0" if i1820p_ip is None else i1820p_ip
-        self.port = 1820 if i1820p_port is None else i1820p_port
-
-        # Notifications
-        I1820App.notification_handlers = {}
-
-        # Service Thread
-        threading.Thread.__init__(self, daemon=True)
+        # Notification handlers
+        self.notification_handlers = {}
 
     def add_thing(self, type, id, attributes={}):
         self.things.append({'type': type, 'id': id, 'attributes': attributes})
@@ -45,7 +42,7 @@ class I1820App(threading.Thread):
     def run(self):
         print(" * Node ID: %s" % i1820_id)
         PingService(self.base_url, self.things).ping()
-        wapp.run(debug=False, host=self.host, port=self.port)
+        self.client.loop_start()
 
     def notification(self, thing: str):
         def _notification(fn):
@@ -55,22 +52,18 @@ class I1820App(threading.Thread):
 
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
-        i1820_session.post(self.base_url + 'log',
-                           data=I1820LogJSONEncoder().encode(log))
+        self.client.publish('I1820/%s/log' % self.token, bson.dumps(log))
 
-    @classmethod
-    def notification_handler(cls, data: dict):
-        results = {}
-        notif = I1820NotificationDictDecoder.decode(data)
+    def _on_notification(self, client, userdata, message):
+        notif = bson.loads(message.payload)
+
+        if not isinstance(notif, I1820Notification):
+            return
+
+        if notif.endpoint != self.i1820_id:
+            return
+
         try:
-            results = cls.notification_handlers[notif.type](notif)
+            self.notification_handlers[notif.type](notif)
         except KeyError:
             pass
-        return results
-
-
-@wapp.route('/event', methods=['POST'])
-def notification_handler():
-    data = flask.request.get_json(force=True)
-    result = I1820App.notification_handler(data)
-    return json.dumps(result)
