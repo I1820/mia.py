@@ -16,15 +16,16 @@ import bson
 
 
 class I1820App:
-    def __init__(self, mqtt_ip: str, mqtt_port: int, t: str):
+    def __init__(self, token: str, mqtt_ip: str, mqtt_port: int=1883):
         # MQTT Up and Running
         self.client = mqtt.Client()
         self.client.connect(mqtt_ip, mqtt_port)
         self.client.on_connect = self._on_connect
-        self.message_callback_add('I1820/%s/event' % t, self._on_notification)
+        self.message_callback_add('I1820/%s/event' % token,
+                                  self._on_notification)
 
         # API Token
-        self.token = t
+        self.token = token
 
         # IoT Things
         self.things = []
