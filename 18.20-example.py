@@ -5,8 +5,9 @@ from I1820.domain.notif import I1820Notification
 
 import time
 
+token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
-app = I1820App('192.168.1.9', 8080)
+app = I1820App(token, '192.168.1.19')
 
 
 @app.notification('lamp')
