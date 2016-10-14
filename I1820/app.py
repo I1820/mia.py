@@ -31,8 +31,8 @@ class I1820App:
         # Notification handlers
         self.notification_handlers = {}
 
-    def add_thing(self, type, id, attributes={}):
-        self.things.append({'type': type, 'id': id, 'attributes': attributes})
+    def add_thing(self, type, id):
+        self.things.append([type, id])
 
     def run(self):
         print(" * Node ID: %s" % i1820_id)
