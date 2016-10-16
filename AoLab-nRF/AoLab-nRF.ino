@@ -82,6 +82,7 @@ void loop()
 		radio.openWritingPipe(pipes[5]);
 		radio.stopListening();
 		radio.write(charbuff,index);
+    Serial.println("r" + String(charbuff));
 		delay(3);
 		radio.startListening();
 		radio.openReadingPipe(0, pipes[5]);
