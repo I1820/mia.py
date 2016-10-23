@@ -1,53 +1,25 @@
 #!/usr/bin/env python3
-import serial
-import io
+import time
 
-from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
 
-token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
+token = '1c7159b0-9570-11e6-88f5-09fddd50ddda'
 
 app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
 
 
-ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
-sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
-
-
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
-    node_id, device_id = data.device.split(':')
-    command = '1' if data.settings['on'] else '0'
-
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
-
-    serial_write(command_raw)
-
-
-def serial_write(command):
-    sio.write(command)
-    sio.flush()
-
-
-def serial_read():
-    line = sio.readline()
-    if len(line) != 0:
-        print(line)
-    data = HashtProtocol().unmarshal(line)
-    if data is not None:
-        states = {}
-        for thing in data.things:
-            states[thing['type']] = thing['value']
-        app.log('multisensor', data.node_id, states)
+    print(data)
 
 if __name__ == '__main__':
-    # MultiSensors
-    app.add_thing('multisensor', '8')
-    app.add_thing('lamp', '2:1')
-
+    app.add_thing('lamp', '1:1')
+    app.add_thing('temperature', '1')
     app.run()
+    i = 10
     while True:
-        serial_read()
+        i = (i + 10) % 100
+        app.log('temperature', '1', {'temperature': str(i)})
+        time.sleep(10)
