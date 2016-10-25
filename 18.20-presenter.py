@@ -14,7 +14,7 @@ wapp = flask.Flask("I1820-Presenter")
 
 @wapp.route('/open/<path:path>', methods=['GET'])
 def open_slide_handler(path):
-    Popen("xpdf -fullscreen ./AoLab-Presnter/slides/%s " % path, shell=True)
+    Popen("xpdf -fullscreen ./AoLab-Presenter/slides/%s " % path, shell=True)
     return ""
 
 
