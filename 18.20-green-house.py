@@ -5,7 +5,8 @@ from xbee import ZigBee
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
-app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
+token = '4b565730-a4b1-11e6-8c5a-7f854f832032'
+app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
 
 serial_port = serial.Serial('/dev/ttyUSB0', 9600)
 xbee = ZigBee(serial_port)
@@ -22,7 +23,7 @@ def led_notification(data: I1820Notification):
 if __name__ == '__main__':
     app.add_thing('lamp', '\x00\x13\xa2\x00@\xc1\xa9o')
     app.add_thing('multisensor', '1')
-    app.start()
+    app.run()
     while True:
         frame = xbee.wait_read_frame()
         print(frame)
