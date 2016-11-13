@@ -23,14 +23,15 @@ def led_notification(data: I1820Notification):
         device = b'D2'
     else:
         device = b'D0'
-    xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xe47-',
-                   command=device, parameter=command)
+        xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xe47-',
+                       command=device, parameter=command)
+
 
 def turnoff():
     command = b'\x05'
     for device in [b'D0', b'D1', b'D2']:
         xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xe47-',
-                   command=device, parameter=command)
+                       command=device, parameter=command)
 
 if __name__ == '__main__':
     turnoff()
@@ -50,5 +51,4 @@ if __name__ == '__main__':
             light = str(sample['adc-0'])
             app.log('multisensor', '1', {'humidity': humidity,
                                          'temperature': temperature,
-                                         'light': light}
-                    )
+                                         'light': light})
