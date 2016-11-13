@@ -29,8 +29,8 @@ if __name__ == '__main__':
         print(frame)
         sample = frame['samples'][0]
         if (len(sample.keys()) == 4):
-            humidity = str(sample['adc-2'])
-            temperature = str(sample['adc-1'])
+            humidity = str((sample['adc-2'] - 500) / 5)
+            temperature = str(sample['adc-1'] + 20)
             temperature = temperature[:2] + '.' + temperature[2:]
             light = str(sample['adc-0'])
             app.log('multisensor', '1', {'humidity': humidity,
