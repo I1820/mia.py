@@ -16,12 +16,12 @@ xbee = ZigBee(serial_port)
 def led_notification(data: I1820Notification):
     # device_id = data.device
     command = b'\x05' if data.settings['on'] else b'\x04'
-    xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xc1\xa9o',
+    xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xe47',
                    command=b'D1', parameter=command)
 
 
 if __name__ == '__main__':
-    app.add_thing('lamp', '\x00\x13\xa2\x00@\xc1\xa9o')
+    app.add_thing('lamp', '\x00\x13\xa2\x00@\xe47')
     app.add_thing('multisensor', '1')
     app.run()
     while True:
