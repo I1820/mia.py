@@ -16,15 +16,15 @@ xbee = ZigBee(serial_port)
 def led_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
     print(node_id, device_id)
+
+    node_id = node_id.encode('utf-8')
+    device_id = device_id.encode('utf-8')
+
     command = b'\x04' if data.settings['on'] else b'\x05'
-    if device_id == '1':
-        device = b'D1'
-    elif device_id == '2':
-        device = b'D2'
-    else:
-        device = b'D0'
-        xbee.remote_at(dest_addr_long=b'\x00\x13\xa2\x00@\xe47-',
-                       command=device, parameter=command)
+
+    xbee.remote_at(dest_addr_long=node_id,
+                   command=b'D%s' % device_id,
+                   parameter=command)
 
 
 def turnoff():
