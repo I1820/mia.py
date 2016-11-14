@@ -15,9 +15,8 @@ xbee = ZigBee(serial_port)
 @app.notification('lamp')
 def led_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
-    print(node_id, device_id)
 
-    node_id = node_id.encode('utf-8')
+    node_id = b'\x00\x13\xa2\x00@\xe47-'
     device_id = device_id.encode('utf-8')
 
     command = b'\x04' if data.settings['on'] else b'\x05'
@@ -44,11 +43,13 @@ if __name__ == '__main__':
         frame = xbee.wait_read_frame()
         print(frame)
         sample = frame['samples'][0]
-        if (len(sample.keys()) == 3):
-            humidity = str((sample['adc-2'] - 500) / 5)
-            temperature = str(sample['adc-1'] + 20)
-            temperature = temperature[:2] + '.' + temperature[2:]
-            light = str(sample['adc-0'])
-            app.log('multisensor', '1', {'humidity': humidity,
-                                         'temperature': temperature,
-                                         'light': light})
+        for key in sample:
+            if key == 'adc-2':
+                humidity = str((sample['adc-2'] - 500) / 5)
+                app.log('multisensor', '1', {'humidity': humidity})
+            elif key == 'adc-1':
+                temperature = str(sample['adc-1'] + 20)
+                app.log('multisensor', '1', {'temperature': temperature})
+            elif key == 'adc-0':
+                light = str(sample['adc-0'])
+                app.log('multisensor', '1', {'light': light})
