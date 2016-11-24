@@ -51,7 +51,7 @@ class I1820App:
 
     def _ping(self):
         message = {
-            'rpi_id': str(i1820_id),
+            'agent_id': str(i1820_id),
             'things': self.things
         }
         self.client.publish('I1820/%s/discovery' % self.token,
