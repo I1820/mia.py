@@ -6,14 +6,17 @@ from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
-app = I1820App('192.168.128.90', 8080, '0.0.0.0', 1820)
+token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
-ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
+app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
+
+ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
+    print(data)
     node_id, device_id = data.device.split(':')
     command = '1' if data.settings['on'] else '0'
 
@@ -65,6 +68,10 @@ if __name__ == '__main__':
         for j in range(1, 3):
             app.add_thing('lamp', '%d:%d' % (j, i))
 
-    app.start()
+    app.run()
     while True:
-        serial_read()
+        try:
+            serial_read()
+        except Exception as e:
+            print(e)
+            pass
