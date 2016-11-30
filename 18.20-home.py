@@ -12,12 +12,14 @@ token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 app = I1820App(token, '192.168.1.19')
 
 
-ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
+ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
+    print(data)
+
     node_id, device_id = data.device.split(':')
     command = '1' if data.settings['on'] else '0'
 
@@ -41,12 +43,14 @@ def serial_read():
         states = {}
         for thing in data.things:
             states[thing['type']] = thing['value']
+        states['battery'] = data.battery
         app.log('multisensor', data.node_id, states)
 
 if __name__ == '__main__':
     # MultiSensors
-    app.add_thing('multisensor', '8')
-    app.add_thing('lamp', '2:1')
+    app.add_thing('multisensor', '6')
+    app.add_thing('lamp', '1:1')
+    app.add_thing('lamp', '1:2')
 
     app.run()
     while True:
