@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import serial
 import io
+import logging
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -12,6 +13,8 @@ app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
 
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
+
+logger = logging.getLogger('I1820')
 
 
 @app.notification('lamp')
@@ -45,7 +48,7 @@ def serial_write(command):
 def serial_read():
     line = sio.readline()
     if len(line) != 0:
-        print(line)
+        logger.info(line)
     data = HashtProtocol().unmarshal(line)
     if data is not None:
         states = {}
