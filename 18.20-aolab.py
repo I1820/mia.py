@@ -14,7 +14,7 @@ app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
-logger = logging.getLogger('I1820')
+logger = logging.getLogger(__name__)
 
 
 @app.notification('lamp')
