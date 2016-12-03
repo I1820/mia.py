@@ -16,7 +16,7 @@ app = I1820App(token, '192.168.1.19')
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('I1820.home')
 
 
 @app.notification('lamp')
