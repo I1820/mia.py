@@ -54,6 +54,7 @@ def serial_read():
         states = {}
         for thing in data.things:
             states[thing['type']] = thing['value']
+        states['battery'] = data.battery
         app.log('multisensor', data.node_id, states)
 
 if __name__ == '__main__':
