@@ -51,7 +51,7 @@ def serial_read():
 
 if __name__ == '__main__':
     # MultiSensors
-    app.add_thing('multisensor', '6')
+    app.add_thing('multisensor', '2')
     app.add_thing('lamp', '1:1')
     app.add_thing('lamp', '1:2')
 
