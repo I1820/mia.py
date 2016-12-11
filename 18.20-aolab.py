@@ -2,6 +2,7 @@
 import serial
 import io
 import logging
+import time
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -19,6 +20,7 @@ logger = logging.getLogger('I1820.aolab')
 
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
+    time.sleep(0.01)
     print(data)
     node_id, device_id = data.device.split(':')
     if 'on' in data.settings:
