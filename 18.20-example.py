@@ -16,10 +16,19 @@ def lamp_notification(data: I1820Notification):
 
 if __name__ == '__main__':
     app.add_thing('lamp', '1:1')
-    app.add_thing('current', '1')
+    app.add_thing('multisensor', '1')
     app.run()
-    i = 10
+    t = 10
+    l = 1024
+    m = 1
     while True:
-        i = (i + 10) % 100
-        app.log('current', '1', {'current': str(i)})
-        time.sleep(10)
+        t = (t + 10) % 100
+        l = l / 2 if l >= 128 else l * 2
+        m = 0 if m == 1 else 1
+        app.log('multisensor', '1', {
+            'temperature': str(t),
+            'light': str(l),
+            'humidity': '24',
+            'motion': str(m)
+        })
+        time.sleep(5)
