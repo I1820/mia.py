@@ -12,7 +12,8 @@ app = I1820App(token, '192.168.1.19')
 
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
-    print(data)
+    pass
+
 
 if __name__ == '__main__':
     app.add_thing('lamp', '1:1')
