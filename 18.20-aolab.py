@@ -21,7 +21,6 @@ logger = logging.getLogger('I1820.aolab')
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
     time.sleep(0.01)
-    print(data)
     node_id, device_id = data.device.split(':')
     if 'on' in data.settings:
         command = '1' if data.settings['on'] else '0'
