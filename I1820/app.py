@@ -13,10 +13,14 @@ from . import i1820_id
 import paho.mqtt.client as mqtt
 import bson
 import threading
+import logging
+
+i1820_logger_app = logging.getLogger('I1820.app')
 
 
 class I1820App:
-    def __init__(self, token: str, mqtt_ip: str, mqtt_port: int=1883):
+    def __init__(self, token: str, mqtt_ip: str, mqtt_port: int=1883,
+                 logger=None):
         # MQTT Up and Running
         self.client = mqtt.Client()
         self.client.connect(mqtt_ip, mqtt_port)
@@ -30,6 +34,9 @@ class I1820App:
 
         # Notification handlers
         self.notification_handlers = {}
+
+        if logger is None:
+            self.logger = i1820_logger_app
 
     def add_thing(self, type, id):
         self.things.append([type, id])
@@ -74,5 +81,7 @@ class I1820App:
 
         try:
             self.notification_handlers[notif.type](notif)
+            self.logger.info('device: %s -- settings: %r' %
+                             (notif.device, notif.settings))
         except KeyError:
             pass
