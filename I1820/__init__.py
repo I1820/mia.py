@@ -16,3 +16,4 @@ i1820_log_handler.setFormatter(i1820_log_formatter)
 logger = logging.getLogger('I1820')
 logger.setLevel(logging.DEBUG)
 logger.addHandler(i1820_log_handler)
+del logger
