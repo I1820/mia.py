@@ -65,7 +65,7 @@ def serial_read():
             states[thing['type']] = thing['value']
         if data.battery != 0:
             states['battery'] = data.battery
-        if data.node_id != 9:
+        if data.node_id != '9':
             app.log('multisensor', data.node_id, states)
         else:
             app.log('gas', data.node_id, states)
