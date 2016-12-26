@@ -63,8 +63,12 @@ def serial_read():
         states = {}
         for thing in data.things:
             states[thing['type']] = thing['value']
-        states['battery'] = data.battery
-        app.log('multisensor', data.node_id, states)
+        if data.battery != 0:
+            states['battery'] = data.battery
+        if data.node_id != 9:
+            app.log('multisensor', data.node_id, states)
+        else:
+            app.log('gas', data.node_id, states)
 
 if __name__ == '__main__':
     # MultiSensors
@@ -76,6 +80,7 @@ if __name__ == '__main__':
     app.add_thing('multisensor', '6')
     app.add_thing('multisensor', '7')
     app.add_thing('multisensor', '8')
+    app.add_thing('gas', '9')
 
     # Lamps
     for i in range(1, 10):
