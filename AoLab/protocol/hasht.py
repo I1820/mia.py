@@ -35,7 +35,10 @@ class HashtProtocol(AoLabSerialProtocol):
         parts = message.split(',')
         node = parts[0][1:]
         battery = parts[-1][:-2]
-        battery = (int(battery) - 2900) // 13
+        try:
+            battery = (int(battery) - 2900) // 13
+        except (KeyError, ValueError):
+            battery = 0
         things = []
         for thing in parts[1:-1]:
             things.append({
