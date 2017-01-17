@@ -2,7 +2,6 @@
 import serial
 import io
 import logging
-import time
 import RPi.GPIO as GPIO
 
 from I1820.app import I1820App
@@ -18,6 +17,7 @@ sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 logger = logging.getLogger('I1820.rfid')
 
 uid_storage = {}
+
 
 @app.notification('lamp')
 def lamp_notification(data: I1820Notification):
