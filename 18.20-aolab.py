@@ -60,11 +60,15 @@ def serial_read():
         logger.info(line)
     data = HashtProtocol().unmarshal(line)
     if data is not None:
-        states = {}
+        states = []
         for thing in data.things:
-            states[thing['type']] = thing['value']
+            states.append({
+                'name': thing['type'],
+                'value': thing['value']
+            })
         if data.battery != 0:
-            states['battery'] = data.battery
+            states.append({'name': 'battery',
+                          'value': data.battery})
         if data.node_id != '9':
             app.log('multisensor', data.node_id, states)
         else:
@@ -95,5 +99,5 @@ if __name__ == '__main__':
         try:
             serial_read()
         except Exception as e:
-            print(e)
+            logger.error(str(e))
             pass
