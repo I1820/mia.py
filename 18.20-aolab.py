@@ -22,10 +22,10 @@ logger = logging.getLogger('I1820.aolab')
 def lamp_notification(data: I1820Notification):
     time.sleep(0.01)
     node_id, device_id = data.device.split(':')
-    if 'on' in data.settings:
-        command = '1' if data.settings['on'] else '0'
-    else:
-        return
+
+    for setting in data.settings:
+        if setting.name == 'on':
+            command = '1' if setting.value else '0'
 
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
@@ -36,12 +36,12 @@ def lamp_notification(data: I1820Notification):
 @app.notification('cooler')
 def cooler_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
-    if 'on' in data.settings:
-        command = '1' if data.settings['on'] else '0'
-    elif 'temperature' in data.settings:
-        command = str(data.settings['temperature'])
-    else:
-        return
+
+    for setting in data.settings:
+        if setting.name == 'on':
+            command = '1' if setting.value else '0'
+        elif setting.name == 'temperature':
+            command = str(setting.value)
 
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
