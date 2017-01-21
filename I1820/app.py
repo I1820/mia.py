@@ -71,12 +71,9 @@ class I1820App:
                                     self._on_notification)
 
     def _on_notification(self, client, userdata, message):
-        notif = json.loads(message.payload)
+        notif = I1820Notification.from_json(message.payload.decode('ascii'))
 
-        if not isinstance(notif, I1820Notification):
-            return
-
-        if notif.endpoint != str(i1820_id):
+        if notif.agent != str(i1820_id):
             return
 
         try:
