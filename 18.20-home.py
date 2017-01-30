@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-import serial
-import io
 import logging
+import requests
 
-from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
@@ -13,78 +11,27 @@ token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 app = I1820App(token, '192.168.1.19')
 
 
-ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
-sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
-
 logger = logging.getLogger('I1820.home')
 
 
-@app.notification('lamp')
-def lamp_notification(data: I1820Notification):
-    node_id, device_id = data.device.split(':')
-
+@app.notification('itunes')
+def itunes_notification(data: I1820Notification):
     for setting in data.settings:
-        if setting.name == 'on':
-            command = '1' if setting.value else '0'
+        if setting['name'] == 'play':
+            if setting['value']:
+                requests.put('http://192.168.1.2:8181/play')
+            else:
+                requests.put('http://192.168.1.2:8181/pause')
+        if setting['name'] == 'direction':
+            if setting['value']:
+                requests.put('http://192.168.1.2:8181/next')
+            else:
+                requests.put('http://192.168.1.2:8181/previous')
 
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
-
-    serial_write(command_raw)
-
-
-@app.notification('cooler')
-def cooler_notification(data: I1820Notification):
-    node_id, device_id = data.device.split(':')
-
-    for setting in data.settings:
-        if setting.name == 'on':
-            command = '1' if setting.value else '0'
-        elif setting.name == 'temperature':
-            command = str(setting.value)
-
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
-
-    serial_write(command_raw)
-
-
-def serial_write(command):
-    sio.write(command)
-    sio.flush()
-
-
-def serial_read():
-    line = sio.readline()
-    if len(line) != 0:
-        logger.info(line)
-    data = HashtProtocol().unmarshal(line)
-    if data is not None:
-        states = []
-        for thing in data.things:
-            states.append({
-                'name': thing['type'],
-                'value': thing['value']
-            })
-        if data.battery != 0:
-            states.append({'name': 'battery',
-                          'value': data.battery})
-        if data.node_id != '9':
-            app.log('multisensor', data.node_id, states)
-        else:
-            app.log('gas', data.node_id, states)
 
 if __name__ == '__main__':
-    # MultiSensors
-    app.add_thing('multisensor', '2')
-
-    # Coolers
-    app.add_thing('cooler', '1:1')
-
-    # Lamps
-    for i in range(1, 10):
-        app.add_thing('lamp', '%d:%d' % (1, i))
+    app.add_thing('itunes', '1')
 
     app.run()
     while True:
-        serial_read()
+        pass
