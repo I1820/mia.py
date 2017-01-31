@@ -20,7 +20,6 @@ def notif (jnotif: I1820Notification) :
             if setting['value']:
                 post_data = {'power': '1'}
                 requests.get(url, data=post_data ,auth=HTTPDigestAuth(username, password))
-                print("on")
             else:
                 post_data = {'power': '0'}
                 r = requests.get(url, data=post_data , auth=HTTPDigestAuth(username, password))
