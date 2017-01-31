@@ -22,10 +22,10 @@ logger = logging.getLogger('I1820.aolab')
 def lamp_notification(data: I1820Notification):
     time.sleep(0.01)
     node_id, device_id = data.device.split(':')
-    if 'on' in data.settings:
-        command = '1' if data.settings['on'] else '0'
-    else:
-        return
+
+    for setting in data.settings:
+        if setting['name'] == 'on':
+            command = '1' if setting['value'] else '0'
 
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
@@ -36,12 +36,12 @@ def lamp_notification(data: I1820Notification):
 @app.notification('cooler')
 def cooler_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
-    if 'on' in data.settings:
-        command = '1' if data.settings['on'] else '0'
-    elif 'temperature' in data.settings:
-        command = str(data.settings['temperature'])
-    else:
-        return
+
+    for setting in data.settings:
+        if setting['name'] == 'on':
+            command = '1' if setting['value'] else '0'
+        elif setting.name == 'temperature':
+            command = str(setting.value)
 
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
@@ -60,11 +60,15 @@ def serial_read():
         logger.info(line)
     data = HashtProtocol().unmarshal(line)
     if data is not None:
-        states = {}
+        states = []
         for thing in data.things:
-            states[thing['type']] = thing['value']
+            states.append({
+                'name': thing['type'],
+                'value': thing['value']
+            })
         if data.battery != 0:
-            states['battery'] = data.battery
+            states.append({'name': 'battery',
+                          'value': data.battery})
         if data.node_id != '9':
             app.log('multisensor', data.node_id, states)
         else:
@@ -95,5 +99,5 @@ if __name__ == '__main__':
         try:
             serial_read()
         except Exception as e:
-            print(e)
+            logger.error(str(e))
             pass

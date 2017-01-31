@@ -11,7 +11,7 @@ from .domain.notif import I1820Notification
 from . import i1820_id
 
 import paho.mqtt.client as mqtt
-import bson
+import json
 import threading
 import logging
 
@@ -54,7 +54,7 @@ class I1820App:
 
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
-        self.client.publish('I1820/%s/log' % self.token, bson.dumps(log))
+        self.client.publish('I1820/%s/log' % self.token, log.to_json())
 
     def _ping(self):
         message = {
@@ -62,7 +62,7 @@ class I1820App:
             'things': self.things
         }
         self.client.publish('I1820/%s/discovery' % self.token,
-                            bson.dumps(message))
+                            json.dumps(message))
         threading.Timer(10, self._ping).start()
 
     def _on_connect(self, client, userdata, flags, rc):
@@ -71,12 +71,9 @@ class I1820App:
                                     self._on_notification)
 
     def _on_notification(self, client, userdata, message):
-        notif = bson.loads(message.payload)
+        notif = I1820Notification.from_json(message.payload.decode('ascii'))
 
-        if not isinstance(notif, I1820Notification):
-            return
-
-        if notif.endpoint != str(i1820_id):
+        if notif.agent != str(i1820_id):
             return
 
         try:

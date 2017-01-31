@@ -26,10 +26,24 @@ if __name__ == '__main__':
         t = (t + 10) % 100
         l = l / 2 if l >= 128 else l * 2
         m = 0 if m == 1 else 1
-        app.log('multisensor', '1', {
-            'temperature': str(t),
-            'light': str(l),
-            'humidity': '24',
-            'motion': str(m)
+
+        states = []
+        states.append({
+            'name': 'temperature',
+            'value': str(t)
         })
+        states.append({
+            'name': 'light',
+            'value': str(l)
+        })
+        states.append({
+            'name': 'motion',
+            'value': str(m)
+        })
+        states.append({
+            'name': 'humidity',
+            'value': '24'
+        })
+
+        app.log('multisensor', '1', states)
         time.sleep(5)
