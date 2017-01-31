@@ -17,7 +17,7 @@ session.auth = HTTPDigestAuth('admin', 'admin')
 @app.notification('smartLamp')
 def notif(jnotif: I1820Notification):
     for setting in jnotif.settings:
-        if setting['name'] == 'on':
+        if setting['name'] == 'on' :
             if setting['value']:
                 post_data = {'power': '1'}
                 for i in range(3):
