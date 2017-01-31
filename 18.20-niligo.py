@@ -30,7 +30,6 @@ def notif (jnotif: I1820Notification) :
 
 if __name__ == '__main__':
     app.add_thing('smartLamp', '1')
-
     app.run()
     while True:
         pass
