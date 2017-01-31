@@ -21,15 +21,24 @@ def notif (jnotif: I1820Notification) :
             if setting['value']:
                 post_data = {'power': '1'}
                 for i in range(3):
-                    session.get(url, params=post_data, verify=False)
+                    try:
+                        session.get(url, params=post_data, verify=False)
+                    except Exception:
+                        pass
             else:
                 post_data = {'power': '0'}
                 for i in range(3):
-                    session.get(url, params=post_data, verify=False)
+                    try:
+                        session.get(url, params=post_data, verify=False)
+                    except Exception:
+                        pass
         if setting['name']=='color':
             post_data = {'color':setting['value'][1:]}
             for i in range(3):
-                session.get(url, params=post_data, verify=False)
+                try:
+                    session.get(url, params=post_data, verify=False)
+                except Exception:
+                    pass
 
 
 
