@@ -26,7 +26,11 @@ def notif (jnotif: I1820Notification) :
                 post_data = {'power': '0'}
                 for i in range(3):
                     session.get(url, params=post_data, verify=False)
-        if setting['name']=='color'
+        if setting['name']=='color':
+            post_data = {'color':setting['value'][1:]}
+            for i in range(3):
+                session.get(url, params=post_data, verify=False)
+
 
 
 if __name__ == '__main__':
