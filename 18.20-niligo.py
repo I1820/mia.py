@@ -10,8 +10,9 @@ token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
 app = I1820App(token, '127.0.0.1')
 url = 'http://192.168.100.1/api/state'
-username = 'admin'
-password = 'admin'
+session = requests.Session()
+session.auth = HTTPDigestAuth('admin', 'admin')
+
 
 @app.notification('smartLamp')
 def notif (jnotif: I1820Notification) :
@@ -19,12 +20,12 @@ def notif (jnotif: I1820Notification) :
         if setting['name'] == 'on':
             if setting['value']:
                 post_data = {'power': '1'}
-                requests.get(url, data=post_data ,auth=HTTPDigestAuth(username, password))
+                for i in range(3):
+                    session.get(url, params=post_data, verify=False)
             else:
                 post_data = {'power': '0'}
-                r = requests.get(url, data=post_data , auth=HTTPDigestAuth(username, password))
-                print(r.content)
-                print("off")
+                for i in range(3):
+                    session.get(url, params=post_data, verify=False)
 
 
 if __name__ == '__main__':
