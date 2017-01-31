@@ -26,6 +26,7 @@ def notif (jnotif: I1820Notification) :
                 post_data = {'power': '0'}
                 for i in range(3):
                     session.get(url, params=post_data, verify=False)
+        if setting['name']=='color'
 
 
 if __name__ == '__main__':
