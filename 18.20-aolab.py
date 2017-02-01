@@ -49,6 +49,19 @@ def cooler_notification(data: I1820Notification):
     serial_write(command_raw)
 
 
+@app.notification('curtain')
+def curtain_notification(data: I1820Notification):
+    node_id, device_id = data.device.split(':')
+    for setting in data.settings:
+        if setting.name == 'height':
+            command = str(setting.value)
+
+    command_raw = HashtProtocol().marshal(data.type, device_id,
+                                          node_id, command)
+
+    serial_write(command_raw)
+
+
 def serial_write(command):
     sio.write(command)
     sio.flush()
