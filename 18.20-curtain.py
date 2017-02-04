@@ -2,7 +2,6 @@
 import serial
 import io
 import logging
-import time
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -15,7 +14,8 @@ app = I1820App(token, '127.0.0.1')
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
-logger = logging.getLogger('I1820.aolab')
+logger = logging.getLogger('I1820.curtain')
+
 
 @app.notification('curtain')
 def curtain_notification(data: I1820Notification):
