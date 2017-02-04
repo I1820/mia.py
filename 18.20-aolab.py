@@ -53,8 +53,8 @@ def cooler_notification(data: I1820Notification):
 def curtain_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
     for setting in data.settings:
-        if setting.name == 'height':
-            command = str(setting.value)
+        if setting['name'] == 'height':
+            command = str(setting['value'])
 
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
