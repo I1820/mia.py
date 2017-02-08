@@ -4,7 +4,6 @@ import io
 import logging
 
 from I1820.app import I1820App
-from I1820.domain.notif import I1820Notification
 
 token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
@@ -17,18 +16,21 @@ logger = logging.getLogger('I1820.car')
 
 line = []
 
+
 def serial_read():
     global line
     line.append(ser.read())
-    print(line)
     if len(line) > 1 and line[-1] == b'\n':
         a = int(line[-3])
+        if line[-4] == b'-':
+            a = -a
         logger.info("a: %s" % a)
         app.log('accelerometer', '1', [{'name': 'accelerate', 'value': a}])
         line = []
 
+
 if __name__ == '__main__':
-    # car
+    # accelerometer
     app.add_thing('accelerometer', '1')
 
     app.run()
