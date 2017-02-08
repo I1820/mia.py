@@ -16,7 +16,7 @@ session.auth = HTTPDigestAuth('admin', 'admin')
 @app.notification('smartLamp')
 def notif(jnotif: I1820Notification):
     for setting in jnotif.settings:
-        if setting['name'] == 'on' :
+        if setting['name'] == 'on':
             if setting['value']:
                 post_data = {'power': '1'}
                 for i in range(3):
@@ -31,8 +31,8 @@ def notif(jnotif: I1820Notification):
                         session.get(url, params=post_data, verify=False)
                     except Exception:
                         pass
-        elif setting['name']=='color':
-            post_data = {'color':setting['value'][1:]}
+        elif setting['name'] == 'color':
+            post_data = {'color': setting['value'][1:]}
             for i in range(3):
                 try:
                     session.get(url, params=post_data, verify=False)
@@ -42,6 +42,7 @@ def notif(jnotif: I1820Notification):
             post_data = {'fade': setting['value'][:-1]}
             for i in range(3):
                 session.get(url, params=post_data, verify=False)
+
 
 if __name__ == '__main__':
     app.add_thing('smartLamp', '1')
