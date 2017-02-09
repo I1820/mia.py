@@ -46,9 +46,10 @@ class I1820App:
         self._ping()
         self.client.loop_start()
 
-    def notification(self, thing: str):
+    def notification(self, *things: [str]):
         def _notification(fn):
-            self.notification_handlers[thing] = fn
+            for thing in things:
+                self.notification_handlers[thing] = fn
             return fn
         return _notification
 
