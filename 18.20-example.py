@@ -10,13 +10,14 @@ token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 app = I1820App(token, '192.168.1.19')
 
 
-@app.notification('lamp')
+@app.notification('lamp', 'alarm')
 def lamp_notification(data: I1820Notification):
     pass
 
 
 if __name__ == '__main__':
     app.add_thing('lamp', '1:1')
+    app.add_thing('alarm', '1:2')
     app.add_thing('multisensor', '1')
     app.run()
     t = 10
