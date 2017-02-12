@@ -44,3 +44,9 @@ Presenter
 
 This project is a presentation controller for RPi, with this project you can
 control your presentation with I1820 platform.
+
+Car
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Author: Roya Taheri
+
+This project is a smart car monitoring system.
