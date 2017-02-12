@@ -95,8 +95,8 @@ if __name__ == '__main__':
 
     # Lamps
     app.add_thing('alarm', '3:3')
-    app.add_thing('alarm', '3:5')
-    app.add_thing('alarm', '3:6')
+    app.add_thing('lamp', '3:5')
+    app.add_thing('lamp', '3:6')
 
     app.run()
     while True:
