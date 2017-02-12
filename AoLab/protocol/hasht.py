@@ -21,6 +21,7 @@ class HashtProtocol(AoLabSerialProtocol):
     }
 
     thing_actuators = {
+        'alarm': 'l',
         'lamp': 'l',
         'cooler': 'c',
         'curtain': 'p'
