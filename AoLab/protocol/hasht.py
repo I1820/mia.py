@@ -21,6 +21,7 @@ class HashtProtocol(AoLabSerialProtocol):
     }
 
     thing_actuators = {
+        'alarm': 'l',
         'lamp': 'l',
         'cooler': 'c',
         'curtain': 'p'
@@ -35,13 +36,18 @@ class HashtProtocol(AoLabSerialProtocol):
             return None
         parts = message.split(',')
         node = parts[0][1:]
-        battery = parts[-1][:-2]
-        try:
-            battery = (int(battery) - 2900) // 13
-        except (KeyError, ValueError):
+        if parts[-1][0].isalpha():
             battery = 0
+            parts[-1] = parts[-1][:-2]
+        else:
+            battery = parts[-1][:-2]
+            parts.pop()
+            try:
+                battery = (int(battery) - 2900) // 13
+            except (KeyError, ValueError):
+                battery = 0
         things = []
-        for thing in parts[1:-1]:
+        for thing in parts[1:]:
             things.append({
                 'type': self.thing_sensors[thing[0]],
                 'value': thing[2:],

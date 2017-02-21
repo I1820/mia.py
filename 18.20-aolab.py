@@ -3,6 +3,7 @@ import serial
 import io
 import logging
 import time
+import sys
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -18,7 +19,7 @@ sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 logger = logging.getLogger('I1820.aolab')
 
 
-@app.notification('lamp')
+@app.notification('lamp', 'alarm')
 def lamp_notification(data: I1820Notification):
     time.sleep(0.01)
     node_id, device_id = data.device.split(':')
@@ -89,28 +90,20 @@ def serial_read():
 
 if __name__ == '__main__':
     # MultiSensors
-    app.add_thing('multisensor', '1')
-    app.add_thing('multisensor', '2')
-    app.add_thing('multisensor', '3')
-    app.add_thing('multisensor', '4')
     app.add_thing('multisensor', '5')
     app.add_thing('multisensor', '6')
-    app.add_thing('multisensor', '7')
-    app.add_thing('multisensor', '8')
     app.add_thing('gas', '9')
 
     # Lamps
-    for i in range(1, 10):
-        for j in range(1, 3):
-            app.add_thing('lamp', '%d:%d' % (j, i))
-
-    # Coolers
-    app.add_thing('cooler', '1:1')
+    app.add_thing('alarm', '3:3')
+    app.add_thing('lamp', '3:5')
+    app.add_thing('lamp', '3:6')
 
     app.run()
     while True:
         try:
             serial_read()
+        except serial.SerialException:
+            sys.exit(1)
         except Exception as e:
             logger.error(str(e))
-            pass
