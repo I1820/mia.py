@@ -3,6 +3,7 @@ import serial
 import io
 import logging
 import time
+import sys
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -102,6 +103,7 @@ if __name__ == '__main__':
     while True:
         try:
             serial_read()
+        except serial.SerialException:
+            sys.exit(1)
         except Exception as e:
             logger.error(str(e))
-            pass
