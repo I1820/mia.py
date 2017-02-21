@@ -4,6 +4,7 @@ import io
 import logging
 
 from I1820.app import I1820App
+from I1820.domain.notif import I1820Notification
 
 token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
 
@@ -28,10 +29,21 @@ def serial_read():
         app.log('accelerometer', '1', [{'name': 'accelerate', 'value': a}])
         line = []
 
+@app.notification('alarm')
+def lamp_notification(data: I1820Notification):
+    for setting in data.settings:
+        if setting['name'] == 'on':
+            command = 'Danger' if setting['value'] else 'Normal'
+
+    ser.write(command.encode('ascii'))
+
+
+
 
 if __name__ == '__main__':
     # accelerometer
     app.add_thing('accelerometer', '1')
+    app.add_thing('alarm', '1')
 
     app.run()
     while True:
