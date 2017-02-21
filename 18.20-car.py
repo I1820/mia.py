@@ -29,6 +29,7 @@ def serial_read():
         app.log('accelerometer', '1', [{'name': 'accelerate', 'value': a}])
         line = []
 
+
 @app.notification('alarm')
 def lamp_notification(data: I1820Notification):
     for setting in data.settings:
@@ -37,8 +38,6 @@ def lamp_notification(data: I1820Notification):
 
     for c in command:
         ser.write(c.encode('ascii'))
-
-
 
 
 if __name__ == '__main__':
