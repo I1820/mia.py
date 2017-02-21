@@ -35,7 +35,8 @@ def lamp_notification(data: I1820Notification):
         if setting['name'] == 'on':
             command = 'Danger' if setting['value'] else 'Normal'
 
-    ser.write(command.encode('ascii'))
+    for c in command:
+        ser.write(c.encode('ascii'))
 
 
 
