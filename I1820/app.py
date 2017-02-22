@@ -64,7 +64,9 @@ class I1820App:
         }
         self.client.publish('I1820/%s/discovery' % self.token,
                             json.dumps(message))
-        threading.Timer(10, self._ping).start()
+        t = threading.Timer(10, self._ping)
+        t.daemon = True
+        t.start()
 
     def _on_connect(self, client, userdata, flags, rc):
         client.subscribe('I1820/%s/notification' % self.token)
