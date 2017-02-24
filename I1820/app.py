@@ -8,10 +8,10 @@
 # =======================================
 from .domain.log import I1820Log
 from .domain.notif import I1820Notification
+from .domain.agent import I1820Agent
 from . import i1820_id
 
 import paho.mqtt.client as mqtt
-import json
 import threading
 import logging
 
@@ -29,8 +29,8 @@ class I1820App:
         # API Token
         self.token = token
 
-        # IoT Things
-        self.things = []
+        # I1829 Agent
+        self.agent = I1820Agent(str(i1820_id), [])
 
         # Notification handlers
         self.notification_handlers = {}
@@ -39,7 +39,7 @@ class I1820App:
             self.logger = i1820_logger_app
 
     def add_thing(self, type, id):
-        self.things.append([type, id])
+        self.agent.things.append({'type': type, 'id': id})
 
     def run(self):
         print(" * Node ID: %s" % i1820_id)
@@ -58,12 +58,8 @@ class I1820App:
         self.client.publish('I1820/%s/log' % self.token, log.to_json())
 
     def _ping(self):
-        message = {
-            'agent_id': str(i1820_id),
-            'things': self.things
-        }
         self.client.publish('I1820/%s/discovery' % self.token,
-                            json.dumps(message))
+                            self.agent.to_json())
         t = threading.Timer(10, self._ping)
         t.daemon = True
         t.start()
