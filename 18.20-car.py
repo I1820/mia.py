@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import serial
-import io
-import logging
 
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
