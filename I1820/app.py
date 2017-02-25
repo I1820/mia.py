@@ -32,8 +32,9 @@ class I1820App:
         # I1829 Agent
         self.agent = I1820Agent(str(i1820_id), [])
 
-        # Notification handlers
+        # Notification/Action handlers
         self.notification_handlers = {}
+        self.action_handlers = {}
 
         if logger is None:
             self.logger = i1820_logger_app
@@ -53,6 +54,13 @@ class I1820App:
             return fn
         return _notification
 
+    def action(self, *names: [str]):
+        def _action(fn):
+            for name in names:
+                self.action_handlers[name] = fn
+            return fn
+        return _action
+
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
         self.client.publish('I1820/%s/log' % self.token, log.to_json())
@@ -68,6 +76,11 @@ class I1820App:
         client.subscribe('I1820/%s/notification' % self.token)
         client.message_callback_add('I1820/%s/notification' % self.token,
                                     self._on_notification)
+        client.message_callback_add('I1820/%s/action' % self.token,
+                                    self._on_action)
+
+    def _on_action(self, client, userdata, message):
+        pass
 
     def _on_notification(self, client, userdata, message):
         notif = I1820Notification.from_json(message.payload.decode('ascii'))
