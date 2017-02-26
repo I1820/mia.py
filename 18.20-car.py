@@ -25,7 +25,7 @@ def serial_read():
         a = float(a)
         id = sline[-14:]
         print("Zigbee id: %s, %g" % (id, a))
-        app.log('accelerometer', '1', [{'name': 'accelerate', 'value': a}])
+        app.log('accelerometer', '1', [{'name': 'accelerate', 'value': str(a)}])
         line = []
 
 
@@ -35,8 +35,8 @@ def lamp_notification(data: I1820Notification):
         if setting['name'] == 'on':
             command = 'Traffic' if setting['value'] else 'Normal'
 
-    for c in command:
-        ser.write(c.encode('ascii'))
+    ser.write(command.encode('ascii'))
+    ser.flush()
 
 
 if __name__ == '__main__':
