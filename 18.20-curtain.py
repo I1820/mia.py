@@ -58,6 +58,7 @@ def serial_read():
 if __name__ == '__main__':
     # Curtain
     app.add_thing('curtain', '3:2')
+    app.add_thing('curtain', '3:3')
 
     app.run()
     while True:
