@@ -14,12 +14,14 @@ from . import i1820_id
 import paho.mqtt.client as mqtt
 import threading
 import logging
+import json
+import time
 
 i1820_logger_app = logging.getLogger('I1820.app')
 
 
 class I1820App:
-    def __init__(self, token: str, mqtt_ip: str, mqtt_port: int=1883,
+    def __init__(self, mqtt_ip: str, mqtt_port: int=1883,
                  logger=None):
         # MQTT Up and Running
         self.client = mqtt.Client()
@@ -27,7 +29,7 @@ class I1820App:
         self.client.on_connect = self._on_connect
 
         # API Token
-        self.token = token
+        self.token = None
 
         # I1829 Agent
         self.agent = I1820Agent(str(i1820_id), [])
@@ -44,8 +46,13 @@ class I1820App:
 
     def run(self):
         print(" * Node ID: %s" % i1820_id)
-        self._ping()
         self.client.loop_start()
+        print(" * Waiting for I1820 ...")
+        while self.token is None:
+            self.client.publish('I1820/discovery', self.agent.to_json())
+            time.sleep(1.5)
+        print(" * I1820 Master: %s" % self.token)
+        self._ping()
 
     def notification(self, *things: [str]):
         def _notification(fn):
@@ -65,6 +72,18 @@ class I1820App:
         log = I1820Log(type, device, states, str(i1820_id))
         self.client.publish('I1820/%s/log' % self.token, log.to_json())
 
+    def _on_discovery_ack(self, client, userdata, message):
+        resp = json.loads(message.payload.decode('ascii'))
+        if resp['id'] != str(i1820_id):
+            return
+        self.token = resp['master']
+        client.unsubscribe('I1820/discovery-ack')
+        client.subscribe('I1820/%s/notification' % self.token)
+        client.message_callback_add('I1820/%s/notification' % self.token,
+                                    self._on_notification)
+        client.message_callback_add('I1820/%s/action' % self.token,
+                                    self._on_action)
+
     def _ping(self):
         self.client.publish('I1820/%s/discovery' % self.token,
                             self.agent.to_json())
@@ -73,11 +92,8 @@ class I1820App:
         t.start()
 
     def _on_connect(self, client, userdata, flags, rc):
-        client.subscribe('I1820/%s/notification' % self.token)
-        client.message_callback_add('I1820/%s/notification' % self.token,
-                                    self._on_notification)
-        client.message_callback_add('I1820/%s/action' % self.token,
-                                    self._on_action)
+        client.subscribe('I1820/discovery-ack')
+        client.message_callback_add('I1820/discovery-ack', self._on_discovery_ack)
 
     def _on_action(self, client, userdata, message):
         pass
