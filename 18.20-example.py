@@ -5,7 +5,9 @@ from I1820.domain.notif import I1820Notification
 
 import time
 
-app = I1820App('192.168.1.19')
+tenant_id = 'parham-home'
+
+app = I1820App(tenant_id, '192.168.1.19')
 
 
 @app.notification('lamp', 'alarm', 'smartLamp')
