@@ -9,9 +9,9 @@ from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
-token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
+tenant_id = 'aolab'
 
-app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
+app = I1820App(tenant_id, 'iot.ceit.aut.ac.ir', 58904)
 
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=115200, timeout=1)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
@@ -87,6 +87,7 @@ def serial_read():
             app.log('multisensor', data.node_id, states)
         else:
             app.log('gas', data.node_id, states)
+
 
 if __name__ == '__main__':
     # MultiSensors
