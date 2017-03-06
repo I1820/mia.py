@@ -5,8 +5,9 @@ from requests.auth import HTTPDigestAuth
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
+tenant_id = 'aolab'
 
-app = I1820App('iot.ceit.aut.ac.ir', 58904)
+app = I1820App(tenant_id, 'iot.ceit.aut.ac.ir', 58904)
 url = 'http://192.168.100.1/api/state'
 session = requests.Session()
 session.auth = HTTPDigestAuth('admin', 'admin')
@@ -41,6 +42,7 @@ def notif(jnotif: I1820Notification):
             post_data = {'fade': setting['value'][:-1]}
             for i in range(3):
                 session.get(url, params=post_data, verify=False)
+
 
 if __name__ == '__main__':
     app.add_thing('smartLamp', '1')
