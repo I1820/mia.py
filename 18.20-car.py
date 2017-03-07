@@ -4,9 +4,9 @@ import serial
 from I1820.app import I1820App
 from I1820.domain.notif import I1820Notification
 
-token = '83DB8F6299E0A303730B5F913B6A3DF420EBC2C2'
+tenant_id = 'aolab'
 
-app = I1820App(token, 'iot.ceit.aut.ac.ir', 58904)
+app = I1820App(tenant_id, 'iot.ceit.aut.ac.ir', 58904)
 
 ser = serial.serial_for_url('/dev/ttyUSB0', baudrate=9600, timeout=1)
 
@@ -23,7 +23,8 @@ def serial_read():
         a = float(a)
         id = sline[-14:]
         print("Zigbee id: %s, %g" % (id, a))
-        app.log('accelerometer', '1', [{'name': 'accelerate', 'value': str(a)}])
+        app.log('accelerometer', '1',
+                [{'name': 'accelerate', 'value': float(a)}])
         line = []
 
 
