@@ -98,8 +98,8 @@ if __name__ == '__main__':
     app.add_thing('gas', '9')
 
     # Lamps
-    for i in range(1, 9):
-        app.add_thing('lamp', '3:%d' % i)
+    for i in range(1, 10):
+        app.add_thing('lamp', '2:%d' % i)
 
     app.run()
     while True:
