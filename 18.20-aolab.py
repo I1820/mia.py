@@ -93,12 +93,13 @@ if __name__ == '__main__':
     # MultiSensors
     app.add_thing('multisensor', '5')
     app.add_thing('multisensor', '6')
+    app.add_thing('multisensor', '7')
+    app.add_thing('multisensor', '8')
     app.add_thing('gas', '9')
 
     # Lamps
-    app.add_thing('alarm', '3:3')
-    app.add_thing('lamp', '3:5')
-    app.add_thing('lamp', '3:6')
+    for i in range(1, 9):
+        app.add_thing('lamp', '3:%d' % i)
 
     app.run()
     while True:
