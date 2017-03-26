@@ -7,7 +7,7 @@ import time
 
 tenant_id = 'parham-home'
 
-app = I1820App(tenant_id, '192.168.1.19')
+app = I1820App(tenant_id, '192.168.73.6')
 
 
 @app.notification('lamp', 'alarm', 'smartLamp')
