@@ -19,15 +19,18 @@ def serial_read():
     if len(line) > 1 and line[-1] == b'\n':
         line = line[:-2]
         line = b''.join(line).decode('ascii')
+        t_id = line[0]
+        line = line[2:]
         t = float(line)
-        app.log('temperature', 'Honeyeh',
+        app.log('temperature', 'Honeyeh-%s' % t_id,
                 [{'name': 'temperature', 'value': t}])
         line = []
 
 
 if __name__ == '__main__':
     # temperature
-    app.add_thing('temperature', 'Honeyeh')
+    app.add_thing('temperature', 'Honeyeh-1')
+    app.add_thing('temperature', 'Honeyeh-2')
 
     app.run()
     while True:
