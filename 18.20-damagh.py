@@ -2,7 +2,7 @@
 import serial
 
 from I1820.app import I1820App
-# from I1820.domain.notif import I1820Notification
+from I1820.domain.notif import I1820Notification
 
 tenant_id = 'aolab'
 
@@ -22,15 +22,30 @@ def serial_read():
         t_id = line[0]
         line = line[2:]
         t = float(line)
+        print(t)
         app.log('temperature', 'Honeyeh-%s' % t_id,
                 [{'name': 'temperature', 'value': t}])
         line = []
+
+
+@app.notification('alarm')
+def alarm_notification(data: I1820Notification):
+    for setting in data.settings:
+        if setting['name'] == 'on':
+            if setting['value']:
+                command = 'E'
+            else:
+                command = 'D'
+
+    ser.write(command.encode('ascii'))
+    ser.flush()
 
 
 if __name__ == '__main__':
     # temperature
     app.add_thing('temperature', 'Honeyeh-1')
     app.add_thing('temperature', 'Honeyeh-2')
+    app.add_thing('alarm', 'Honeyeh-3')
 
     app.run()
     while True:
