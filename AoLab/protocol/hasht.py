@@ -28,8 +28,11 @@ class HashtProtocol(AoLabSerialProtocol):
     }
 
     def marshal(self, type, device_id, node_id, command) -> str:
-        return '@%s,%s%s%s.' % (node_id, self.thing_actuators[type],
-                                device_id, command)
+        if type == 'lamp':
+            return '@%s,%s%s%s.' % (node_id, self.thing_actuators[type],
+                                    device_id, command)
+        if type == 'cooler':
+            return '@%s,%s%s.' % (node_id, self.thing_actuators[type], command)
 
     def unmarshal(self, message: str) -> AoLabThingMessage:
         if len(message) == 0 or message[0] != '@':
