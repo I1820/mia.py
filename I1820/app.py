@@ -63,10 +63,11 @@ class I1820App:
 
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
-        self.client.publish('I1820/%s/log' % self.tenant_id, log.to_json())
+        self.client.publish('I1820/%s/log/send' % self.tenant_id,
+                            log.to_json())
 
     def _ping(self):
-        self.client.publish('I1820/%s/discovery' % self.tenant_id,
+        self.client.publish('I1820/%s/discovery/ping' % self.tenant_id,
                             self.agent.to_json())
         t = threading.Timer(10, self._ping)
         t.daemon = True
