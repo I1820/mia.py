@@ -67,7 +67,7 @@ class I1820App:
                             log.to_json())
 
     def _ping(self):
-        self.client.publish('I1820/%s/discovery/ping' % self.tenant_id,
+        self.client.publish('I1820/%s/agent/ping' % self.tenant_id,
                             self.agent.to_json())
         t = threading.Timer(10, self._ping)
         t.daemon = True
