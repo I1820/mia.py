@@ -12,8 +12,9 @@ from .domain.agent import I1820Agent
 from . import i1820_id
 
 import paho.mqtt.client as mqtt
-import threading
 import logging
+import asyncio
+import threading
 
 i1820_logger_app = logging.getLogger('I1820.app')
 
@@ -36,6 +37,9 @@ class I1820App:
         self.notification_handlers = {}
         self.action_handlers = {}
 
+        # Event loop
+        self.loop = asyncio.new_event_loop()
+
         if logger is None:
             self.logger = i1820_logger_app
 
@@ -44,8 +48,19 @@ class I1820App:
 
     def run(self):
         print(" * Node ID: %s" % i1820_id)
+        t = threading.Thread(target=self._run)
+        t.daemon = True
+        t.start()
+
+    def _run(self):
+        asyncio.set_event_loop(self.loop)
         self._ping()
-        self.client.loop_start()
+        self._loop()
+        try:
+            self.loop.run_forever()
+        finally:
+            self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+            self.loop.close()
 
     def notification(self, *things: [str]):
         def _notification(fn):
@@ -69,9 +84,11 @@ class I1820App:
     def _ping(self):
         self.client.publish('I1820/%s/agent/ping' % self.tenant_id,
                             self.agent.to_json())
-        t = threading.Timer(10, self._ping)
-        t.daemon = True
-        t.start()
+        self.loop.call_later(10, self._ping)
+
+    def _loop(self):
+        self.client.loop()
+        self.loop.call_soon(self._loop)
 
     def _on_connect(self, client, userdata, flags, rc):
         client.subscribe('I1820/%s/notification' % self.tenant_id)
