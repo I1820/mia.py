@@ -91,9 +91,9 @@ class I1820App:
         self.loop.call_soon(self._loop)
 
     def _on_connect(self, client, userdata, flags, rc):
-        client.subscribe('I1820/%s/notification' % self.tenant_id)
-        client.message_callback_add('I1820/%s/notification' % self.tenant_id,
-                                    self._on_notification)
+        client.subscribe('I1820/%s/configuration/request' % self.tenant_id)
+        client.message_callback_add('I1820/%s/configuration/request' %
+                                    self.tenant_id, self._on_notification)
 
     def _on_notification(self, client, userdata, message):
         notif = I1820Notification.from_json(message.payload.decode('ascii'))
@@ -102,7 +102,10 @@ class I1820App:
             return
 
         try:
-            self.notification_handlers[notif.type](notif)
+            ret = self.notification_handlers[notif.type](notif)
+            if ret is True:
+                client.publish('I1820/%s/configuration/change'
+                               % self.tenant_id)
             self.logger.info('device: %s -- settings: %r' %
                              (notif.device, notif.settings))
         except KeyError:
