@@ -94,12 +94,6 @@ class I1820App:
         client.subscribe('I1820/%s/notification' % self.tenant_id)
         client.message_callback_add('I1820/%s/notification' % self.tenant_id,
                                     self._on_notification)
-        client.subscribe('I1820/%s/action' % self.tenant_id)
-        client.message_callback_add('I1820/%s/action' % self.tenant_id,
-                                    self._on_action)
-
-    def _on_action(self, client, userdata, message):
-        pass
 
     def _on_notification(self, client, userdata, message):
         notif = I1820Notification.from_json(message.payload.decode('ascii'))
