@@ -105,7 +105,7 @@ class I1820App:
             ret = self.notification_handlers[notif.type](notif)
             if ret is True:
                 client.publish('I1820/%s/configuration/change'
-                               % self.tenant_id)
+                               % self.tenant_id, message)
             self.logger.info('device: %s -- settings: %r' %
                              (notif.device, notif.settings))
         except KeyError:
