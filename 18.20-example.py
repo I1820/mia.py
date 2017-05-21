@@ -12,7 +12,7 @@ app = I1820App(tenant_id, '192.168.73.6')
 
 @app.notification('lamp', 'alarm', 'smartLamp')
 def lamp_notification(data: I1820Notification):
-    pass
+    return True
 
 
 if __name__ == '__main__':
