@@ -142,7 +142,7 @@ if __name__ == '__main__':
         app.add_thing('lamp', '3:%d' % i)
 
     app.add_thing('cooler', '1:1')
-    app.add_thing('curtain', '1:1')
+    app.add_thing('curtain', '4:1')
     app.add_thing('projector', '1:1')
     app.add_thing('tv', '1:1')
     app.add_thing('mode', 'presentation')
