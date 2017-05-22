@@ -40,7 +40,7 @@ def cooler_notification(data: I1820Notification):
 
     for setting in data.settings:
         if setting['name'] == 'on':
-            command = '1' if setting['value'] else '0'
+            command = '11' if setting['value'] else '0'
         elif setting.name == 'temperature':
             command = str(setting.value)
 
