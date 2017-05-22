@@ -90,6 +90,17 @@ def curtain_notification(data: I1820Notification):
 
     serial_write(command_raw)
 
+@app.notification('mode')
+def curtain_notification(data: I1820Notification):
+    if data.device == 'presentation':
+        for setting in data.settings:
+            if setting['name'] == 'on':
+                if setting['value']:
+                    command = '@1,p2.@2,l70.@2,l80.@2,l90.@3,l70.@3,l80.@3,l90.@4,p1-260.'
+                else:
+                    command = '@1,p2.@2,l71.@2,l81.@2,l91.@3,l71.@3,l81.@3,l91.@4,p1+260.@1,p2.'
+        serial_write(command)
+
 
 def serial_write(command):
     sio.write(command)
@@ -131,8 +142,10 @@ if __name__ == '__main__':
         app.add_thing('lamp', '3:%d' % i)
 
     app.add_thing('cooler', '1:1')
+    app.add_thing('curtain', '1:1')
     app.add_thing('projector', '1:1')
     app.add_thing('tv', '1:1')
+    app.add_thing('mode', 'presentation')
 
     app.run()
     while True:
