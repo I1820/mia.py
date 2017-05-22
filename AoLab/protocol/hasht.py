@@ -24,14 +24,16 @@ class HashtProtocol(AoLabSerialProtocol):
         'alarm': 'l',
         'lamp': 'l',
         'cooler': 'c',
-        'curtain': 'p'
+        'curtain': 'p',
+        'projector': 'p',
+        'tv': 't'
     }
 
     def marshal(self, type, device_id, node_id, command) -> str:
-        if type == 'lamp':
+        if type == 'lamp' or type == 'curtain':
             return '@%s,%s%s%s.' % (node_id, self.thing_actuators[type],
                                     device_id, command)
-        if type == 'cooler':
+        if type != 'lamp':
             return '@%s,%s%s.' % (node_id, self.thing_actuators[type], command)
 
     def unmarshal(self, message: str) -> AoLabThingMessage:
