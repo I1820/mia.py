@@ -63,6 +63,34 @@ def curtain_notification(data: I1820Notification):
     serial_write(command_raw)
 
 
+@app.notification('projector')
+def curtain_notification(data: I1820Notification):
+    node_id, device_id = data.device.split(':')
+    for setting in data.settings:
+        if setting['name'] == 'on':
+            command = '2'
+        if setting['name'] == 'input':
+            command = '3'
+
+    command_raw = HashtProtocol().marshal(data.type, device_id,
+                                          node_id, command)
+
+    serial_write(command_raw)
+
+
+@app.notification('tv')
+def curtain_notification(data: I1820Notification):
+    node_id, device_id = data.device.split(':')
+    for setting in data.settings:
+        if setting['name'] == 'on':
+            command = '4'
+
+    command_raw = HashtProtocol().marshal(data.type, device_id,
+                                          node_id, command)
+
+    serial_write(command_raw)
+
+
 def serial_write(command):
     sio.write(command)
     sio.flush()
@@ -103,6 +131,8 @@ if __name__ == '__main__':
         app.add_thing('lamp', '3:%d' % i)
 
     app.add_thing('cooler', '1:1')
+    app.add_thing('projector', '1:1')
+    app.add_thing('tv', '1:1')
 
     app.run()
     while True:
