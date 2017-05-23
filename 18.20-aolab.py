@@ -3,7 +3,6 @@ import serial
 import io
 import logging
 import time
-import sys
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -64,7 +63,7 @@ def curtain_notification(data: I1820Notification):
 
 
 @app.notification('projector')
-def curtain_notification(data: I1820Notification):
+def projector_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
     for setting in data.settings:
         if setting['name'] == 'on':
@@ -79,7 +78,7 @@ def curtain_notification(data: I1820Notification):
 
 
 @app.notification('tv')
-def curtain_notification(data: I1820Notification):
+def tv_notification(data: I1820Notification):
     node_id, device_id = data.device.split(':')
     for setting in data.settings:
         if setting['name'] == 'on':
@@ -90,15 +89,18 @@ def curtain_notification(data: I1820Notification):
 
     serial_write(command_raw)
 
+
 @app.notification('mode')
-def curtain_notification(data: I1820Notification):
+def mode_notification(data: I1820Notification):
     if data.device == 'presentation':
         for setting in data.settings:
             if setting['name'] == 'on':
                 if setting['value']:
-                    command = '@1,p2.@2,l70.@2,l80.@2,l90.@3,l70.@3,l80.@3,l90.@4,p1-260.'
+                    command = ('@1,p2.@2,l70.@2,l80.@2,l90.@3,l70.@3,',
+                               'l80.@3,l90.@4,p1-260.')
                 else:
-                    command = '@1,p2.@2,l71.@2,l81.@2,l91.@1,p2.@3,l71.@3,l81.@3,l91.@4,p1+260.'
+                    command = ('@1,p2.@2,l71.@2,l81.@2,l91.@1,p2.@3,l71.',
+                               '@3,l81.@3,l91.@4,p1+260.')
         serial_write(command)
 
 
