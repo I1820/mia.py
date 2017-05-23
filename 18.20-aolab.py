@@ -41,8 +41,8 @@ def cooler_notification(data: I1820Notification):
     for setting in data.settings:
         if setting['name'] == 'on':
             command = '11' if setting['value'] else '0'
-        elif setting.name == 'temperature':
-            command = str(setting.value)
+        elif setting['name'] == 'temperature':
+            command = str(setting['value'])
 
     command_raw = HashtProtocol().marshal(data.type, device_id,
                                           node_id, command)
@@ -130,10 +130,11 @@ def serial_read():
 
 if __name__ == '__main__':
     # MultiSensors
-    app.add_thing('multisensor', '5')
-    app.add_thing('multisensor', '6')
     app.add_thing('multisensor', '1')
-    app.add_thing('multisensor', '8')
+    app.add_thing('multisensor', '2')
+    app.add_thing('multisensor', '3')
+    app.add_thing('multisensor', '4')
+    app.add_thing('multisensor', '5')
     app.add_thing('gas', '9')
 
     # Lamps
@@ -151,7 +152,5 @@ if __name__ == '__main__':
     while True:
         try:
             serial_read()
-        except serial.SerialException:
-            sys.exit(1)
         except Exception as e:
             logger.error(str(e))
