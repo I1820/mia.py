@@ -127,6 +127,8 @@ def serial_read():
         if data.node_id != '9':
             app.log('multisensor', data.node_id, states)
         else:
+            if states[0]['value'] > 610:
+                serial_write('@5,21')
             app.log('gas', data.node_id, states)
 
 
@@ -148,6 +150,7 @@ if __name__ == '__main__':
     app.add_thing('curtain', '4:1')
     app.add_thing('projector', '1:1')
     app.add_thing('tv', '1:1')
+    app.add_thing('alarm', '5:2')
     app.add_thing('mode', 'presentation')
 
     app.run()
