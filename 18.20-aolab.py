@@ -96,15 +96,18 @@ def tv_notification(data: I1820Notification):
 @app.notification('mode')
 def mode_notification(data: I1820Notification):
     global fire_scenario
+    global alarm_is_on
     if data.device == 'fire':
         for setting in data.settings:
             if setting['name'] == 'on':
                 if setting['value']:
                     fire_scenario = True
-                    command = ''
+                    command = '-'
+                    alarm_is_on = False
                 else:
                     fire_scenario = False
-                    command = '@5,A20.'
+                    command = '@5,A30.'
+                    alarm_is_on = False
         serial_write(command)
     if data.device == 'presentation':
         for setting in data.settings:
@@ -146,10 +149,10 @@ def serial_read():
             if fire_scenario:
                 if int(states[0]['value']) >= 610 and not alarm_is_on:
                     alarm_is_on = True
-                    serial_write('@5,A21.')
+                    serial_write('@5,A31.')
                 if int(states[0]['value']) < 610 and alarm_is_on:
                     alarm_is_on = False
-                    serial_write('@5,A20')
+                    serial_write('@5,A30.')
             app.log('gas', data.node_id, states)
 
 
@@ -171,7 +174,7 @@ if __name__ == '__main__':
     app.add_thing('curtain', '4:1')
     app.add_thing('projector', '1:1')
     app.add_thing('tv', '1:1')
-    app.add_thing('alarm', '5:2')
+    app.add_thing('alarm', '5:3')
     app.add_thing('mode', 'presentation')
     app.add_thing('mode', 'fire')
 
