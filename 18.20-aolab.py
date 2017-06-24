@@ -113,12 +113,16 @@ def mode_notification(data: I1820Notification):
         for setting in data.settings:
             if setting['name'] == 'on':
                 if setting['value']:
-                    command = ('@1,p2.@4,p1-260.@2,l70.@2,l80.@2,l90.@3,l70.@3,'
+                    command1 = ('@1,p2.@4,p1-260.')
+                    command2 = ('@2,l70.@2,l80.@2,l90.@3,l70.@3,'
                                'l80.@3,l90.')
                 else:
-                    command = ('@1,p2.@4,p1+260.@2,l71.@2,l81.@2,l91.@1,p2.@3,l71.'
+                    command1 = ('@1,p2.@4,p1+260.')
+                    command2 = ('@2,l71.@2,l81.@2,l91.@1,p2.@3,l71.'
                                '@3,l81.@3,l91.')
-        serial_write(command)
+        serial_write(command1)
+        time.sleep(0.3)
+        serial_write(command2)
 
 
 def serial_write(command):
