@@ -26,11 +26,12 @@ class HashtProtocol(AoLabSerialProtocol):
         'cooler': 'c',
         'curtain': 'p',
         'projector': 'p',
-        'tv': 't'
+        'tv': 't',
+        'valve': 'v'
     }
 
     def marshal(self, type, device_id, node_id, command) -> str:
-        if type == 'lamp' or type == 'curtain' or type == 'alarm':
+        if type == 'lamp' or type == 'curtain' or type == 'alarm' or type == 'valve':
             return '@%s,%s%s%s.' % (node_id, self.thing_actuators[type],
                                     device_id, command)
         if type != 'lamp':
