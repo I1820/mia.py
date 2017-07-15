@@ -114,7 +114,7 @@ def mode_notification(data: I1820Notification):
             if setting['name'] == 'on':
                 if setting['value']:
                     command1 = ('@1,p2.@4,p1-270.')
-                    command2 = ('@2,l70,l80,l90')
+                    command2 = ('@2,l70,l80,l90.')
                     command3 = ('@3,l70,l80,l90.')
                 else:
                     command1 = ('@1,p2.@1,p2.@4,p1+270.')
