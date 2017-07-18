@@ -3,6 +3,7 @@ import serial
 import io
 import logging
 import time
+import requests
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
@@ -156,9 +157,35 @@ def serial_read():
                 if int(states[0]['value']) >= 610 and not alarm_is_on:
                     alarm_is_on = True
                     serial_write('@5,A31.')
+
+                    # Mr.Tehrani is here !
+                    url = 'http://172.23.178.160/api/state'
+                    session = requests.Session()
+                    session.auth = HTTPDigestAuth('admin', 'admin')
+
+                    post_data = {'color': 'ff0000'}
+                    for i in range(3):
+                        try:
+                            session.get(url, params=post_data, verify=False)
+                        except Exception:
+                            pass
+
                 if int(states[0]['value']) < 610 and alarm_is_on:
                     alarm_is_on = False
                     serial_write('@5,A30.')
+
+                    # Mr.Tehrani is here !
+                    url = 'http://172.23.178.160/api/state'
+                    session = requests.Session()
+                    session.auth = HTTPDigestAuth('admin', 'admin')
+
+                    post_data = {'color': '000000'}
+                    for i in range(3):
+                        try:
+                            session.get(url, params=post_data, verify=False)
+                        except Exception:
+                            pass
+
             app.log('gas', data.node_id, states)
 
 
