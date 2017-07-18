@@ -4,6 +4,7 @@ import io
 import logging
 import time
 import requests
+from requests.auth import HTTPDigestAuth
 
 from AoLab.protocol.hasht import HashtProtocol
 from I1820.app import I1820App
