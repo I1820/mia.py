@@ -2,7 +2,6 @@
 
 import io
 import logging
-import os
 import time
 
 import requests
@@ -37,8 +36,8 @@ def lamp_notification(data: I1820Notification):
     else:
         return
 
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
+    command_raw = HashtProtocol.marshal(data.type, device_id,
+                                        node_id, command)
 
     serial_write(command_raw)
 
@@ -57,8 +56,8 @@ def cooler_notification(data: I1820Notification):
     else:
         return
 
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
+    command_raw = HashtProtocol.marshal(data.type, device_id,
+                                        node_id, command)
 
     serial_write(command_raw)
 
@@ -73,8 +72,8 @@ def curtain_notification(data: I1820Notification):
     else:
         return
 
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
+    command_raw = HashtProtocol.marshal(data.type, device_id,
+                                        node_id, command)
 
     serial_write(command_raw)
 
@@ -92,8 +91,8 @@ def projector_notification(data: I1820Notification):
     else:
         return
 
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
+    command_raw = HashtProtocol.marshal(data.type, device_id,
+                                        node_id, command)
 
     serial_write(command_raw)
 
@@ -108,8 +107,8 @@ def tv_notification(data: I1820Notification):
     else:
         return
 
-    command_raw = HashtProtocol().marshal(data.type, device_id,
-                                          node_id, command)
+    command_raw = HashtProtocol.marshal(data.type, device_id,
+                                        node_id, command)
 
     serial_write(command_raw)
 
@@ -168,57 +167,56 @@ def serial_read():
     line = sio.readline()
     if len(line) != 0:
         logger.info(line)
-    data = HashtProtocol().unmarshal(line)
-    if data is not None:
-        states = []
-        for thing in data.things:
-            states.append({
-                'name': thing['type'],
-                'value': thing['value']
-            })
-        if data.battery != 0:
-            states.append({'name': 'battery',
-                          'value': data.battery})
-        if data.node_id != '9':
-            app.log('multisensor', data.node_id, states)
-        else:
-            global fire_scenario
-            global alarm_is_on
-            if fire_scenario:
-                if int(states[0]['value']) >= 610 and not alarm_is_on:
-                    alarm_is_on = True
-                    serial_write('@5,A31.')
+    data = HashtProtocol.unmarshal(line)
+    states = []
+    for thing in data.things:
+        states.append({
+            'name': thing['type'],
+            'value': thing['value']
+        })
+    if data.battery != 0:
+        states.append({'name': 'battery',
+                      'value': data.battery})
+    if data.node_id != '9':
+        app.log('multisensor', data.node_id, states)
+    else:
+        global fire_scenario
+        global alarm_is_on
+        if fire_scenario:
+            if int(states[0]['value']) >= 610 and not alarm_is_on:
+                alarm_is_on = True
+                serial_write('@5,A31.')
 
-                    # Mr.Tehrani is here !
-                    url = 'http://172.23.178.160/api/state'
-                    session = requests.Session()
-                    session.auth = HTTPDigestAuth('admin', 'admin')
+                # Mr.Tehrani is here !
+                url = 'http://172.23.178.160/api/state'
+                session = requests.Session()
+                session.auth = HTTPDigestAuth('admin', 'admin')
 
-                    post_data = {'color': 'ff0000'}
-                    for _ in range(3):
-                        try:
-                            session.get(url, params=post_data, verify=False)
-                        except Exception:
-                            pass
+                post_data = {'color': 'ff0000'}
+                for _ in range(3):
+                    try:
+                        session.get(url, params=post_data, verify=False)
+                    except Exception:
+                        pass
 
-                if int(states[0]['value']) < 610 and alarm_is_on:
-                    alarm_is_on = False
-                    serial_write('@5,A30.')
+            if int(states[0]['value']) < 610 and alarm_is_on:
+                alarm_is_on = False
+                serial_write('@5,A30.')
 
-                    # Mr.Tehrani (Niligo CEO) share their smart lamp with us
-                    # and here we are going to turn them on as our scenario
-                    url = 'http://172.23.178.160/api/state'
-                    session = requests.Session()
-                    session.auth = HTTPDigestAuth('admin', 'admin')
+                # Mr.Tehrani (Niligo CEO) share their smart lamp with us
+                # and here we are going to turn them on as our scenario
+                url = 'http://172.23.178.160/api/state'
+                session = requests.Session()
+                session.auth = HTTPDigestAuth('admin', 'admin')
 
-                    post_data = {'color': '000000'}
-                    for _ in range(3):
-                        try:
-                            session.get(url, params=post_data, verify=False)
-                        except Exception:
-                            pass
+                post_data = {'color': '000000'}
+                for _ in range(3):
+                    try:
+                        session.get(url, params=post_data, verify=False)
+                    except Exception:
+                        pass
 
-            app.log('gas', data.node_id, states)
+        app.log('gas', data.node_id, states)
 
 
 if __name__ == '__main__':

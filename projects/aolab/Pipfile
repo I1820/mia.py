@@ -6,8 +6,10 @@ name = "pypi"
 [packages]
 mia_py = { "path" = "./../..", "editable" = true }
 pyserial = "*"
+requests = "*"
 
 [dev-packages]
+mypy = "*"
 
 [requires]
 python_version = "3.10"
