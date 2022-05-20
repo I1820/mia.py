@@ -1,1 +1,0 @@
-ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", RUN+="/home/parham/Documents/I1820.RPi/18.20-aolab.py"
