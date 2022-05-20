@@ -1,27 +1,17 @@
-# In The Name Of God
-# ========================================
-# [] File Name : I1820App.py
-#
-# [] Creation Date : 09-09-2016
-#
-# [] Created By : Parham Alvani (parham.alvani@gmail.com)
-# =======================================
-from .domain.log import I1820Log
-from .domain.notif import I1820Notification
-from .domain.agent import I1820Agent
-from . import i1820_id
-
-import paho.mqtt.client as mqtt
-import logging
 import asyncio
+import logging
 import threading
 
-i1820_logger_app = logging.getLogger('I1820.app')
+import paho.mqtt.client as mqtt
+
+from . import i1820_id
+from .domain.agent import I1820Agent
+from .domain.log import I1820Log
+from .domain.notif import I1820Notification
 
 
 class I1820App:
-    def __init__(self, tenant_id: str, mqtt_ip: str, mqtt_port: int=1883,
-                 logger=None):
+    def __init__(self, tenant_id: str, mqtt_ip: str, mqtt_port: int = 1883):
         # MQTT Up and Running
         self.client = mqtt.Client()
         self.client.connect(mqtt_ip, mqtt_port)
@@ -40,8 +30,7 @@ class I1820App:
         # Event loop
         self.loop = asyncio.new_event_loop()
 
-        if logger is None:
-            self.logger = i1820_logger_app
+        self.logger = logging.getLogger('I1820.app')
 
     def add_thing(self, type, id):
         self.agent.things.append({'type': type, 'id': id})
@@ -62,14 +51,14 @@ class I1820App:
             self.loop.run_until_complete(self.loop.shutdown_asyncgens())
             self.loop.close()
 
-    def notification(self, *things: [str]):
+    def notification(self, *things: list[str]):
         def _notification(fn):
             for thing in things:
                 self.notification_handlers[thing] = fn
             return fn
         return _notification
 
-    def action(self, *names: [str]):
+    def action(self, *names: list[str]):
         def _action(fn):
             for name in names:
                 self.action_handlers[name] = fn
