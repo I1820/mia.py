@@ -1,5 +1,0 @@
-# ignore all uploaded slides
-*
-
-# except this file itself
-!.gitignore
