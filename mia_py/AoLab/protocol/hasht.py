@@ -1,17 +1,7 @@
-# In The Name Of God
-# ========================================
-# [] File Name : hasht.py
-#
-# [] Creation Date : 18-09-2016
-#
-# [] Created By : Parham Alvani (parham.alvani@gmail.com)
-# =======================================
-from .base import AoLabSerialProtocol
 from ..domain.message import AoLabThingMessage
 
 
-class HashtProtocol(AoLabSerialProtocol):
-
+class HashtProtocol():
     thing_sensors = {
         't': 'temperature',
         'l': 'light',
@@ -30,16 +20,19 @@ class HashtProtocol(AoLabSerialProtocol):
         'valve': 'v'
     }
 
-    def marshal(self, type, device_id, node_id, command) -> str:
-        if type == 'lamp' or type == 'curtain' or type == 'alarm' or type == 'valve':
-            return '@%s,%s%s%s.' % (node_id, self.thing_actuators[type],
-                                    device_id, command)
+    @classmethod
+    def marshal(cls, type: str, device_id: str, node_id: str, command: str) -> str:
+        if type == 'lamp' or type == 'curtain' or type == 'alarm' \
+                or type == 'valve':
+            return f'@{node_id},{cls.thing_actuators[type]}{device_id}{command}.'
         if type != 'lamp':
-            return '@%s,%s%s.' % (node_id, self.thing_actuators[type], command)
+            return f'@{node_id},{cls.thing_actuators[type]}{command}.'
+        return ''
 
-    def unmarshal(self, message: str) -> AoLabThingMessage:
+    @classmethod
+    def unmarshal(cls, message: str) -> AoLabThingMessage:
         if len(message) == 0 or message[0] != '@':
-            return None
+            raise ValueError('message is not valid')
         parts = message.split(',')
         node = parts[0][1:]
         if parts[-1][0].isalpha():
@@ -55,8 +48,8 @@ class HashtProtocol(AoLabSerialProtocol):
         things = []
         for thing in parts[1:]:
             things.append({
-                'type': self.thing_sensors[thing[0]],
+                'type': cls.thing_sensors[thing[0]],
                 'value': thing[2:],
                 'device': thing[1]
             })
-        return AoLabThingMessage(node, battery, *things)
+        return AoLabThingMessage(int(node), battery, things)
