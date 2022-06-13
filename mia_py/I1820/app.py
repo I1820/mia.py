@@ -30,10 +30,10 @@ class I1820App:
         # Event loop
         self.loop = asyncio.new_event_loop()
 
-        self.logger = logging.getLogger('I1820.app')
+        self.logger = logging.getLogger("I1820.app")
 
     def add_thing(self, type, id):
-        self.agent.things.append({'type': type, 'id': id})
+        self.agent.things.append({"type": type, "id": id})
 
     def run(self):
         print(" * Node ID: %s" % i1820_id)
@@ -51,11 +51,12 @@ class I1820App:
             self.loop.run_until_complete(self.loop.shutdown_asyncgens())
             self.loop.close()
 
-    def notification(self, *things: list[str]):
+    def notification(self, *things: str):
         def _notification(fn):
             for thing in things:
                 self.notification_handlers[thing] = fn
             return fn
+
         return _notification
 
     def action(self, *names: list[str]):
@@ -63,16 +64,17 @@ class I1820App:
             for name in names:
                 self.action_handlers[name] = fn
             return fn
+
         return _action
 
     def log(self, type, device, states):
         log = I1820Log(type, device, states, str(i1820_id))
-        self.client.publish('I1820/%s/log/send' % self.tenant_id,
-                            log.to_json())
+        self.client.publish("I1820/%s/log/send" % self.tenant_id, log.to_json())
 
     def _ping(self):
-        self.client.publish('I1820/%s/agent/ping' % self.tenant_id,
-                            self.agent.to_json())
+        self.client.publish(
+            "I1820/%s/agent/ping" % self.tenant_id, self.agent.to_json()
+        )
         self.loop.call_later(10, self._ping)
 
     def _loop(self):
@@ -80,12 +82,14 @@ class I1820App:
         self.loop.call_soon(self._loop)
 
     def _on_connect(self, client, userdata, flags, rc):
-        client.subscribe('I1820/%s/configuration/request' % self.tenant_id)
-        client.message_callback_add('I1820/%s/configuration/request' %
-                                    self.tenant_id, self._on_notification)
+        client.subscribe("I1820/%s/configuration/request" % self.tenant_id)
+        client.message_callback_add(
+            "I1820/%s/configuration/request" % self.tenant_id,
+            self._on_notification,
+        )
 
     def _on_notification(self, client, userdata, message):
-        notif = I1820Notification.from_json(message.payload.decode('ascii'))
+        notif = I1820Notification.from_json(message.payload.decode("ascii"))
 
         if notif.agent != str(i1820_id):
             return
@@ -93,9 +97,12 @@ class I1820App:
         try:
             ret = self.notification_handlers[notif.type](notif)
             if ret is True:
-                client.publish('I1820/%s/configuration/change'
-                               % self.tenant_id, notif.to_json())
-            self.logger.info('device: %s -- settings: %r' %
-                             (notif.device, notif.settings))
+                client.publish(
+                    "I1820/%s/configuration/change" % self.tenant_id,
+                    notif.to_json(),
+                )
+            self.logger.info(
+                "device: %s -- settings: %r" % (notif.device, notif.settings)
+            )
         except KeyError:
             pass
