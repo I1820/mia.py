@@ -20,19 +20,21 @@ if __name__ == "__main__":
     app.add_thing("alarm", "1:2")
     app.add_thing("smartLamp", "1:3")
     app.add_thing("multisensor", "1")
+
     app.run()
-    t = 10
-    l = 1024
-    m = 1
+
+    TEMPERATURE = 10
+    LIGHT = 1024
+    MOTION = 1
     while True:
-        t = (t + 10) % 100
-        l = l / 2 if l >= 128 else l * 2
-        m = 0 if m == 1 else 1
+        TEMPERATURE = (TEMPERATURE + 10) % 100
+        LIGHT = LIGHT / 2 if LIGHT >= 128 else LIGHT * 2
+        MOTION = 0 if MOTION == 1 else 1
 
         states = []
-        states.append({"name": "temperature", "value": str(t)})
-        states.append({"name": "light", "value": str(l)})
-        states.append({"name": "motion", "value": str(m)})
+        states.append({"name": "temperature", "value": str(TEMPERATURE)})
+        states.append({"name": "light", "value": str(LIGHT)})
+        states.append({"name": "motion", "value": str(MOTION)})
         states.append({"name": "humidity", "value": "24"})
 
         app.log("multisensor", "1", states)
