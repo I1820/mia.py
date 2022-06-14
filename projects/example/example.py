@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import time
+from datetime import datetime
 
 from mia_py.I1820.app import I1820App
 from mia_py.I1820.domain.notif import I1820Notification
 
 tenant_id = "parham-home"
 
-app = I1820App(tenant_id, "192.168.73.6")
+app = I1820App(tenant_id, "127.0.0.1")
 
 
 @app.notification("lamp", "alarm", "smartLamp")
@@ -38,4 +39,5 @@ if __name__ == "__main__":
         states.append({"name": "humidity", "value": "24"})
 
         app.log("multisensor", "1", states)
+        print(f'sending information to mia {datetime.now()}')
         time.sleep(5)
