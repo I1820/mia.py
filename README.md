@@ -46,3 +46,9 @@ control your presentation with MiA platform.
 - Author: Roya Taheri
 
 This project is a smart car monitoring system.
+
+### Damagh
+
+- Author: Honeyeh Yazdizadeh
+
+This project is a temperature monitoring system using Zigbee.
