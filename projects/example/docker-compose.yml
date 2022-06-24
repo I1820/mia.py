@@ -21,7 +21,7 @@ services:
     environment:
       MIA_MQTT__HOST: emqx
       MIA_DATABASE__NAME: mongodb
-      MIA_DATABASE__CONFIG__HOST: mongodb://mognodb
+      MIA_DATABASE__CONFIG__HOST: mongodb://mongodb
       MIA_DATABASE__CONFIG__PORT: 27017
       MIA_DATABASE__CONFIG__DATABASE: mia
       MIA_TENANT: parham-home
