@@ -13,6 +13,7 @@ app = I1820App(tenant_id, "127.0.0.1")
 
 @app.notification("lamp", "alarm", "smartLamp")
 def lamp_notification(data: I1820Notification):
+    print(f'we have a notification for {data.device} of {data.type}')
     return True
 
 
