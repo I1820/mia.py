@@ -8,6 +8,7 @@
 # =======================================
 import datetime
 import json
+import typing
 
 
 class I1820Log:
@@ -23,10 +24,10 @@ class I1820Log:
     :param agent: identification of target end device agent [Raspberry PI].
     :type agent: str
     '''
-    def __init__(self, type: str, device: str,
+    def __init__(self, device_type: str, device_id: str,
                  states: list,
                  agent: str,
-                 timestamp: datetime.datetime = None):
+                 timestamp: typing.Optional[datetime.datetime] = None):
         if timestamp is None:
             timestamp = datetime.datetime.utcnow()
 
@@ -36,8 +37,8 @@ class I1820Log:
                     'states must be an array of names and values.')
 
         self.states = states
-        self.type = type
-        self.device = device
+        self.type = device_type
+        self.device = device_id
         self.timestamp = timestamp
         self.agent = agent
 

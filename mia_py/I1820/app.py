@@ -1,6 +1,6 @@
-import asyncio
 import logging
 import threading
+import time
 
 import paho.mqtt.client as mqtt
 
@@ -14,6 +14,7 @@ class I1820App:
     def __init__(self, tenant_id: str, mqtt_ip: str, mqtt_port: int = 1883):
         # MQTT Up and Running
         self.client = mqtt.Client()
+        self.client.reconnect_delay_set(1, 360)
         self.client.connect(mqtt_ip, mqtt_port)
         self.client.on_connect = self._on_connect
 
@@ -27,64 +28,50 @@ class I1820App:
         self.notification_handlers = {}
         self.action_handlers = {}
 
-        # Event loop
-        self.loop = asyncio.new_event_loop()
-
         self.logger = logging.getLogger("I1820.app")
 
-    def add_thing(self, type, id):
-        self.agent.things.append({"type": type, "id": id})
+    def add_thing(self, device_type: str, device_id: str):
+        self.agent.things.append({"type": device_type, "id": device_id})
 
     def run(self):
-        print(" * Node ID: %s" % i1820_id)
-        t = threading.Thread(target=self._run)
-        t.daemon = True
-        t.start()
-
-    def _run(self):
-        asyncio.set_event_loop(self.loop)
-        self._ping()
-        self._loop()
-        try:
-            self.loop.run_forever()
-        finally:
-            self.loop.run_until_complete(self.loop.shutdown_asyncgens())
-            self.loop.close()
+        print(f" * Node ID: {i1820_id}")
+        threading.Thread(
+            target=self._ping,
+            name="ping_thread",
+            daemon=True,
+        ).start()
+        threading.Thread(
+            target=self.client.loop_forever,
+            name="mqtt_thread",
+            daemon=True,
+            kwargs={'retry_first_connection': True}
+        ).start()
 
     def notification(self, *things: str):
-        def _notification(fn):
+        def _notification(func):
             for thing in things:
-                self.notification_handlers[thing] = fn
-            return fn
+                self.notification_handlers[thing] = func
+            return func
 
         return _notification
 
-    def action(self, *names: list[str]):
-        def _action(fn):
-            for name in names:
-                self.action_handlers[name] = fn
-            return fn
-
-        return _action
-
-    def log(self, type, device, states):
-        log = I1820Log(type, device, states, str(i1820_id))
-        self.client.publish("I1820/%s/log/send" % self.tenant_id, log.to_json())
+    def log(self, device_type: str, device_id: str, states):
+        log = I1820Log(device_type, device_id, states, str(i1820_id))
+        self.client.publish(f"I1820/{self.tenant_id}/log/send", log.to_json())
 
     def _ping(self):
-        self.client.publish(
-            "I1820/%s/agent/ping" % self.tenant_id, self.agent.to_json()
-        )
-        self.loop.call_later(10, self._ping)
-
-    def _loop(self):
-        self.client.loop()
-        self.loop.call_soon(self._loop)
+        while True:
+            self.client.publish(
+                f"I1820/{self.tenant_id}/agent/ping", self.agent.to_json()
+            )
+            # sleeps for 10 seconds
+            time.sleep(10)
 
     def _on_connect(self, client, userdata, flags, rc):
-        client.subscribe("I1820/%s/configuration/request" % self.tenant_id)
+        print(" * MQTT connection is up and running")
+        client.subscribe(f"I1820/{self.tenant_id}/configuration/request")
         client.message_callback_add(
-            "I1820/%s/configuration/request" % self.tenant_id,
+            f"I1820/{self.tenant_id}/configuration/request",
             self._on_notification,
         )
 
